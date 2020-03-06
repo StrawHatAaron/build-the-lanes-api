@@ -22,7 +22,8 @@ namespace BuildTheLanesAPI.Controllers
         }
 
         [HttpPost]
-        public HttpResponseMessage PostProjectItem()
+        [ActionName("Complex")]
+        public HttpResponseMessage PostProject(Models.Project project)
         {
             //open the connection
             using var con = new MySqlConnection(Database.cs);
@@ -33,10 +34,14 @@ namespace BuildTheLanesAPI.Controllers
             {
                 //Get the MySQL Version - Its 8
                 Console.WriteLine($"MySQL version : {con.ServerVersion}");
+                Console.WriteLine($"Project: {project.ProjectNum}");
                 //do a test Insertion
                 using var cmd = new MySqlCommand();
                 cmd.Connection = con;
-                cmd.CommandText = "INSERT INTO Project(project_num, start_date, status, city, zip_code) VALUES (2, '2020-03-6', 'NEW', 'Rocklin', '95765')";
+
+                cmd.CommandText = "INSERT INTO Project(project_num, start_date, status, city, zip_code) VALUES (" +
+                    project.ProjectNum + "," + project.StartDate + "," + project.Status + "," +
+                    project.Status + "," + project.ZipCode + ");";
                 cmd.ExecuteNonQuery();
                 con.Close();
                 return new HttpResponseMessage(System.Net.HttpStatusCode.Created);
