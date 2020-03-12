@@ -14,7 +14,7 @@ namespace BuildTheLanesAPI.Services
 {
     public interface IUserService
     {
-        User Authenticate(string username, string password);
+        User Authenticate(string email, string password);
         IEnumerable<User> GetAll();
         User GetById(int id);
     }
@@ -35,9 +35,9 @@ namespace BuildTheLanesAPI.Services
             _appSettings = appSettings.Value;
         }
 
-        public User Authenticate(string username, string password)
+        public User Authenticate(string email, string password)
         {
-            var user = _users.SingleOrDefault(x => x.Email == username && x.Password == password);
+            var user = _users.SingleOrDefault(x => x.Email == email && x.Password == password);
 
             // return null if user not found
             if (user == null)
