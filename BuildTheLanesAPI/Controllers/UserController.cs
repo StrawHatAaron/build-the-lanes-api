@@ -30,6 +30,7 @@ namespace BuildTheLanesAPI.Controllers
             return Ok(user);
         }
 
+
         [Authorize(Roles = Role.Admin)]
         [HttpGet]
         public IActionResult GetAll()
@@ -37,6 +38,7 @@ namespace BuildTheLanesAPI.Controllers
             var users = _userService.GetAll();
             return Ok(users);
         }
+
 
         [HttpGet("{id}")]
         public IActionResult GetById(int id)

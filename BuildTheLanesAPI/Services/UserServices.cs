@@ -64,6 +64,7 @@ namespace BuildTheLanesAPI.Services
 
         public IEnumerable<User> GetAll()
         {
+            Console.WriteLine("I got called.");
             return _users.WithoutPasswords();
         }
 
