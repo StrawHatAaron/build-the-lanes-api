@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using BuildTheLanesAPI.Services;
 using BuildTheLanesAPI.Entities;
@@ -31,7 +32,7 @@ namespace BuildTheLanesAPI.Controllers
         }
 
 
-        [Authorize(Roles = Role.Admin)]
+        [Authorize(Roles = Roles.Admin)]
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -43,9 +44,10 @@ namespace BuildTheLanesAPI.Controllers
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
+            Console.WriteLine("Getting User id:" + id);
             // only allow admins to access other user records
             var currentUserId = int.Parse(User.Identity.Name);
-            if (id != currentUserId && !User.IsInRole(Role.Admin))
+            if (id != currentUserId && !User.IsInRole(Roles.Admin))
                 return Forbid();
 
             var user = _userService.GetById(id);
@@ -54,6 +56,13 @@ namespace BuildTheLanesAPI.Controllers
                 return NotFound();
 
             return Ok(user);
+        }
+
+
+        [HttpPost("post")]
+        public IActionResult PostUser()
+        {
+            return NotFound();
         }
     }
 }

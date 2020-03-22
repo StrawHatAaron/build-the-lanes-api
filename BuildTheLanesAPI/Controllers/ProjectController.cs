@@ -47,7 +47,7 @@ namespace BuildTheLanesAPI.Controllers
             con.Open();
             try
             {
-                Console.WriteLine($"Project: {project.ZipCode}");
+                Console.WriteLine($"Project zip code: {project.ZipCode}");
                 //do a test Insertion
                 using var cmd = new MySqlCommand();
                 cmd.Connection = con;
