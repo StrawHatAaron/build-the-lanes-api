@@ -9,7 +9,7 @@ namespace BuildTheLanesAPI.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("[controller]")]
+    [Route(Constants.api + "/[controller]")]
     public class UsersController : ControllerBase
     {
         private IUserService _userService;
