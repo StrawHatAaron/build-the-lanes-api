@@ -2,8 +2,6 @@
 using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
-using System.Data;
-using System.Data.SqlClient;
 
 
 namespace BuildTheLanesAPI.Controllers
