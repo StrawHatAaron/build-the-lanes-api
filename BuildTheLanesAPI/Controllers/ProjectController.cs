@@ -3,10 +3,7 @@ using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 
 namespace BuildTheLanesAPI.Controllers
@@ -15,7 +12,12 @@ namespace BuildTheLanesAPI.Controllers
     [ApiController]
     public class ProjectController : Controller
     {
+        public IConfiguration Configuration { get; }
 
+        public ProjectController(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
 
         [HttpGet]
         public IActionResult GetAll()
@@ -24,7 +26,7 @@ namespace BuildTheLanesAPI.Controllers
 
             //string connectionString = Constants.cs;
             string connectionString = Configuration["ConnectionStrings:DefaultConnection"];
-
+            Console.WriteLine("connectionString: "+connectionString);
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -36,14 +38,16 @@ namespace BuildTheLanesAPI.Controllers
 
                 using (SqlDataReader dataReader = command.ExecuteReader())
                 {
+                    Console.WriteLine("Made it here");
                     while (dataReader.Read())
                     {
                         Project project = new Project();
-                        project.ProjectNumber = Convert.ToInt32(dataReader["ProjectNumber"]);
-                        project.StartDate = Convert.ToString(dataReader["StartDate"]);
-                        project.Status = Convert.ToString(dataReader["Status"]);
-                        project.City = Convert.ToString(dataReader["City"]);
-                        project.ZipCode= Convert.ToString(dataReader["ZipCode"]);
+                        Console.WriteLine("dataReader:" + dataReader);
+                        project.ProjectNumber = Convert.ToInt32(dataReader["project_num"]);
+                        project.StartDate = Convert.ToString(dataReader["start_date"]);
+                        project.Status = Convert.ToString(dataReader["status"]);
+                        project.City = Convert.ToString(dataReader["city"]);
+                        project.ZipCode= Convert.ToString(dataReader["zip_code"]);
                         projectList.Add(project);
                     }
                 }
@@ -53,6 +57,8 @@ namespace BuildTheLanesAPI.Controllers
             //Console.WriteLine("I have been callllllleeeeddddd!!!");
             return Ok(projectList);
         }
+
+
 
         [HttpGet("{ProjectNumber}")]
         public HttpResponseMessage GetProject(long ProjectNumber)
