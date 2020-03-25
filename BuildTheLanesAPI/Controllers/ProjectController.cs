@@ -35,24 +35,34 @@ namespace BuildTheLanesAPI.Controllers
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
-                string sql = "SELECT * FROM Project";
-                SqlCommand command = new SqlCommand(sql, connection);
-                using (SqlDataReader dataReader = command.ExecuteReader())
+                try
                 {
-                    while (dataReader.Read())
+                    string sql = "SELECT * FROM Project";
+                    SqlCommand command = new SqlCommand(sql, connection);
+                    using (SqlDataReader dataReader = command.ExecuteReader())
                     {
-                        Project project = new Project();
-                        project.ProjectNumber = Convert.ToInt32(dataReader["project_num"]);
-                        project.StartDate = Convert.ToString(dataReader["start_date"]);
-                        project.Status = Convert.ToString(dataReader["status"]);
-                        project.City = Convert.ToString(dataReader["city"]);
-                        project.ZipCode= Convert.ToString(dataReader["zip_code"]);
-                        projectList.Add(project);
+                        while (dataReader.Read())
+                        {
+                            Project project = new Project();
+                            project.ProjectNumber = Convert.ToInt32(dataReader["project_num"]);
+                            project.StartDate = Convert.ToString(dataReader["start_date"]);
+                            project.Status = Convert.ToString(dataReader["status"]);
+                            project.City = Convert.ToString(dataReader["city"]);
+                            project.ZipCode = Convert.ToString(dataReader["zip_code"]);
+                            projectList.Add(project);
+                        }
                     }
+                    connection.Close();
+                    return Ok(projectList);
                 }
-                connection.Close();
+                catch(SqlException ex)
+                {
+                    connection.Close();
+                    return BadRequest(ex);
+                }
+
             }
-            return Ok(projectList);
+            
         }
 
 
