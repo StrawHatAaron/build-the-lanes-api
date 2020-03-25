@@ -1,27 +1,37 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
+using BuildTheLanesAPI.Services;
+using BuildTheLanesAPI.Entities;
+using BuildTheLanesAPI.Models;
 
 namespace BuildTheLanesAPI.Controllers
 {
-    [Route(Constants.api+"/[controller]")]
+    [Authorize]
     [ApiController]
+    [Route(Constants.api + "/[controller]")]
     public class ProjectController : Controller
     {
         public IConfiguration Configuration { get; }
+        private readonly string connectionString;
+        private IUserService _userService;
 
-        public ProjectController(IConfiguration configuration)
+        public ProjectController(IConfiguration configuration, IUserService userService)
         {
             Configuration = configuration;
+            connectionString = Configuration["ConnectionStrings:DefaultConnection"];
+            _userService = userService;
         }
 
+
+        [Authorize(Roles = Roles.Admin)]
         [HttpGet]
         public IActionResult GetAll()
         {
             List<Project> projectList = new List<Project>();
-            string connectionString = Configuration["ConnectionStrings:DefaultConnection"];
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
@@ -51,7 +61,6 @@ namespace BuildTheLanesAPI.Controllers
         public IActionResult GetProject(int ProjectNumber)
         {
             Project project = new Project();
-            string connectionString = Configuration["ConnectionStrings:DefaultConnection"];
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
@@ -78,7 +87,6 @@ namespace BuildTheLanesAPI.Controllers
         [HttpPost]
         public IActionResult PostProject([FromBody] Project project)
         {
-            string connectionString = Configuration["ConnectionStrings:DefaultConnection"];
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
@@ -89,6 +97,31 @@ namespace BuildTheLanesAPI.Controllers
                 connection.Close();
             }
             return Ok(project);
+        }
+
+
+        [HttpDelete]
+        public IActionResult DeleteProject(int project_num)
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string sql = $"DELETE FROM Project WHERE project_num='{project_num}'";
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    connection.Open();
+                    try
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                    catch (SqlException ex)
+                    {
+                        //ViewBag.Result = "Operation got error:" + ex.Message;
+                    }
+                    connection.Close();
+                }
+            }
+
+            return RedirectToAction("Index");
         }
     }
 }
