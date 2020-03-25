@@ -12,7 +12,7 @@ namespace BuildTheLanesAPI.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route(Constants.api + "/[controller]")]
+    [Route(Constants.api + "/[controller]")]    
     public class ProjectController : Controller
     {
         public IConfiguration Configuration { get; }
@@ -27,7 +27,7 @@ namespace BuildTheLanesAPI.Controllers
         }
 
 
-        [Authorize(Roles = Roles.Admin)]
+        [Authorize(Roles = Roles.User)]
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -68,6 +68,7 @@ namespace BuildTheLanesAPI.Controllers
 
 
         [HttpGet("{ProjectNumber}")]
+        [Authorize(Roles = Roles.User)]
         public IActionResult GetProject(int ProjectNumber)
         {
             Project project = new Project();
@@ -95,6 +96,7 @@ namespace BuildTheLanesAPI.Controllers
         
 
         [HttpPost]
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult PostProject([FromBody] Project project)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
