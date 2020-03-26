@@ -19,7 +19,7 @@ CREATE TABLE Project(
     PRIMARY KEY (project_num)
 );
 
-CREATE TABLE ProjectPhotos(
+CREATE TABLE Project_Photos(
     data_link VARCHAR(1024) NOT NULL,
     project_num INTEGER NOT NULL,
     photo_name VARCHAR(64) NOT NULL,
@@ -48,7 +48,6 @@ CREATE TABLE Users(
 	created DATETIME,
 	PRIMARY KEY (email),
 );
-
 /***Role Based Sub-Class Tables***/
 /***May be used in with "Users" table to create Named Queries***/
 CREATE TABLE Donator(
@@ -86,7 +85,6 @@ CREATE TABLE Engineer(
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
 );
-
 /***Engineer: Certification and Degree Data***/
 /***Note: these aren't profiles. Just a tables for Engineer(s) with
           Multiple degrees/certifications. ***/
@@ -98,7 +96,6 @@ CREATE TABLE Engineer_Certifications(
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
 );
-
 CREATE TABLE Engineer_Degrees(
     email VARCHAR(320) NOT NULL,
     degree VARCHAR(256),
@@ -106,6 +103,27 @@ CREATE TABLE Engineer_Degrees(
     FOREIGN KEY (email) REFERENCES Engineer(email)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
+);
+/***Admin: Audited Actions***/
+/***Note: these aren't profiles. Just actions that may be audited***/
+CREATE TABLE Admin_Added_User(
+    admin_email VARCHAR(320) NOT NULL,
+    user_email  VARCHAR(320) NOT NULL,
+    timestamp DATETIME,
+    PRIMARY KEY (admin_email),
+	FOREIGN KEY (admin_email) REFERENCES Admin(email)
+		ON DELETE CASCADE
+		ON UPDATE CASCADE,
+);
+
+CREATE TABLE Admin_Deleted_User(
+    admin_email VARCHAR(320) NOT NULL,
+    user_email  VARCHAR(320) NOT NULL,
+    timestamp DATETIME,
+    PRIMARY KEY (admin_email),
+	FOREIGN KEY (admin_email) REFERENCES Admin(email)
+		ON DELETE CASCADE
+		ON UPDATE CASCADE,
 );
 /*****ROLE BASED AUTH PROFILES SECTION ENDS HERE*****/
 /*****TABLE CREATION ENDS HERE*****/
@@ -122,6 +140,14 @@ VALUES  ('04-09-2001',  'NEW',          'Vacaville',    '95688'),
         ('2018-04-03',	'Stage 1',	    'Dublin',	    '43016'),
         ('2018-04-03',	'Stage 2',	    'Worthington',	'42125'),
         ('2018-04-03',	'Stage 2',	    'Worthington',	'42125');
+
+INSERT INTO Project_Photos(data_link, project_num, photo_name)
+VALUES ('https://avatars2.githubusercontent.com/u/25778774?s=400&u=9d632b219a820cc7c56f1345ca20cabe34788f89&v=4',
+        1, 'Photo 1'),
+       ('https://avatars2.githubusercontent.com/u/37526270?s=400&v=4',
+        2, 'Photo 2'),
+       ('https://avatars3.githubusercontent.com/u/44451183?s=400&v=4',
+        3, 'Photo 3');
 
 INSERT INTO Users (email, password, token, f_name, l_name,
 	/*d=Donator | s=Staff | e=Engineer | a=Admin   so...  ads=[Staff, Donator, Admin]*/
@@ -157,9 +183,36 @@ VALUES
     ('staff_donator@test.com',      'password', '', 'engineer_donator',     'test', 'sd',
     40.00,                          'Title',        NULL,                   NULL);
 
+INSERT INTO Engineer_Certifications(email, certification)
+VALUES ();
 
+INSERT INTO Engineer_Degrees(email, degree)
+VALUES();
+
+INSERT INTO Admin_Added_User(admin_email, user_email, timestamp)
+VALUES ();
+
+INSERT INTO Admin_Deleted_User(admin_email, user_email, timestamp)
+VALUES();
 /*****INSERTION TEST DATA ENDS HERE*****/
 /*****DATA INSERTION ENDS HERE*****/
+
+
+
+/*****PERSISTENT STORED MODULES START HERE*****/
+/***DATA INSERTION STARTS HERE***/
+-- CREATE TRIGGER [schema_name.]trigger_name
+-- ON table_name
+-- AFTER  {[INSERT],[UPDATE],[DELETE]}
+-- [NOT FOR REPLICATION]
+-- AS
+-- {sql_statements}
+/*****DATA INSERTION ENDS    HERE*****/
+
+
+/***STORED PROCEDURES STARTS HERE***/
+/***STORED PROCEDURES ENDS   HERE***/
+/*****PERSISTENT STORED MODULES END HERE*****/
 
 
 
@@ -175,10 +228,12 @@ SELECT * FROM Users AS Users;
 
 
 /*****DROPPING ANYTHING FROM DATABASE STARTS HERE*****/
-DROP TABLE ProjectPhotos;
+DROP TABLE Project_Photos;
 DROP TABLE Project;
 DROP TABLE Engineer_Certifications;
 DROP TABLE Engineer_Degrees;
+DROP TABLE Admin_Added_User;
+DROP TABLE Admin_Deleted_User;
 DROP TABLE Admin;
 DROP TABLE Engineer;
 DROP TABLE Donator;
