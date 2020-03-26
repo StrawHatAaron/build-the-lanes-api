@@ -43,9 +43,9 @@ CREATE TABLE Users(
 	/*For: Staff */
 	title VARCHAR(128),
 	/*For: Engineer */
-	type VARCHAR(256) NOT NULL,
+	type VARCHAR(256),
 	/*For: Admin */
-	created DATETIME NOT NULL
+	created DATETIME,
 	PRIMARY KEY (email),
 );
 
@@ -69,15 +69,6 @@ CREATE TABLE Staff(
 		ON UPDATE CASCADE
 );
 
-CREATE TABLE Engineer(
-    email VARCHAR(320) NOT NULL,
-    type VARCHAR(256) NOT NULL
-    PRIMARY KEY (email),
-	FOREIGN KEY (email) REFERENCES Staff(email)
-		ON DELETE CASCADE
-		ON UPDATE CASCADE
-);
-
 CREATE TABlE Admin(
     email VARCHAR(320) NOT NULL,
     created DATETIME NOT NULL
@@ -87,49 +78,32 @@ CREATE TABlE Admin(
 		ON UPDATE CASCADE
 );
 
-/***Engineer: Certification and Degree Data***/
-/***Note: these aren't profiles. Just a tables for Engineer(s) with
-          Multiple degrees/certifications. ***/
--- CREATE TABLE Engineer_Certifications(
---     email VARCHAR(320) NOT NULL,
---     certification VARCHAR(256),
---     PRIMARY KEY (email, certification),
---     FOREIGN KEY (email) REFERENCES Engineer(email)
--- 		ON DELETE CASCADE
--- 		ON UPDATE CASCADE
--- );
---
--- CREATE TABLE Engineer_Degrees(
---     email VARCHAR(320) NOT NULL,
---     degree VARCHAR(256),
---     PRIMARY KEY (email, degree),
---     FOREIGN KEY (email) REFERENCES Engineer(email)
--- 		ON DELETE CASCADE
--- 		ON UPDATE CASCADE
--- );
-/***Admin: Audited Actions***/
-/***Note: these aren't profiles. Just actions that may be audited***/
-CREATE TABLE Admin_Added_User(
-    admin_email VARCHAR(320) NOT NULL,
-    user_email  VARCHAR(320) NOT NULL,
-    timestamp DATETIME,
-    PRIMARY KEY (user_email),
-	FOREIGN KEY (admin_email) REFERENCES Admin(email)
-		ON DELETE CASCADE
-		ON UPDATE CASCADE,
-    FOREIGN KEY (user_email) REFERENCES Users(email)
+CREATE TABLE Engineer(
+    email VARCHAR(320) NOT NULL,
+    type VARCHAR(256) NOT NULL
+    PRIMARY KEY (email),
+	FOREIGN KEY (email) REFERENCES Staff(email)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
 );
 
-CREATE TABLE Admin_Deleted_User(
-    admin_email VARCHAR(320) NOT NULL,
-    user_email  VARCHAR(320) NOT NULL,
-    PRIMARY KEY (user_email),
-	FOREIGN KEY (admin_email) REFERENCES Admin(email)
+/***Engineer: Certification and Degree Data***/
+/***Note: these aren't profiles. Just a tables for Engineer(s) with
+          Multiple degrees/certifications. ***/
+CREATE TABLE Engineer_Certifications(
+    email VARCHAR(320) NOT NULL,
+    certification VARCHAR(256),
+    PRIMARY KEY (email),
+    FOREIGN KEY (email) REFERENCES Engineer(email)
 		ON DELETE CASCADE
-		ON UPDATE CASCADE,
-    FOREIGN KEY (user_email) REFERENCES Users(email)
+		ON UPDATE CASCADE
+);
+
+CREATE TABLE Engineer_Degrees(
+    email VARCHAR(320) NOT NULL,
+    degree VARCHAR(256),
+    PRIMARY KEY (email),
+    FOREIGN KEY (email) REFERENCES Engineer(email)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
 );
@@ -163,25 +137,26 @@ INSERT INTO Users (email, password, token, f_name, l_name,
 VALUES
     /*For: Admin Donator */
     ('admin@test.com',              'password', '', 'admin',                'test', 'a',
-    10.00,                          NULL,                                   GETDATE()),
+    10.00,                          'Title',       'Software Developer',    GETDATE()),
     /*For: Donator */
     ('donator@test.com',            'password', '', 'donator',              'test', 'd',
-    NULL,                           NULL,                                   GETDATE()),
+    NULL,                           NULL,           NULL,                   NULL),
     /*For: Staff */
     ('staff@test.com',              'password', '', 'staff',                'test', 's',
-    NULL,                           NULL,                                   GETDATE()),
+    NULL,                           'Title',        NULL,                   NULL),
     /*For: Engineer */
     ('engineer@test.com',           'password', '', 'engineer',             'test', 'e',
-    NULL,                           'Traffic Engineer',                     GETDATE()),
+    NULL,                           'Title',        NULL,                   NULL),
     /*For: Admin Donantor */
     ('admin_donator@test.com',      'password', '', 'admin_donator',        'test', 'ad',
-    20.00,                          NULL,                                   GETDATE()),
+    20.00,                          'Title',        'Database Admin',       NULL),
     /*For: Engineer Donator */
     ('engineer_donator@test.com',   'password', '', 'engineer_donator',     'test', 'ed',
-    30.00,                          'Transportation Engineer',              GETDATE()),
+    30.00,                          'Title',        NULL,                   GETDATE()),
     /*For: Staff Donator */
     ('staff_donator@test.com',      'password', '', 'engineer_donator',     'test', 'sd',
-    40.00,                          NULL,                                   GETDATE());
+    40.00,                          'Title',        NULL,                   NULL);
+
 
 /*****INSERTION TEST DATA ENDS HERE*****/
 /*****DATA INSERTION ENDS HERE*****/
@@ -190,26 +165,25 @@ VALUES
 
 /*****QUERIES STARTS HERE*****/
 /***Basic Queries*****/
-SELECT * FROM Project;
-SELECT * FROM Users;
-
+SELECT * FROM Project as Projects;
+SELECT * FROM Users AS Users;
 /***Join Queries*****/
 
 /***Named Queries*****/
 /*****QUERIES ENDS HERE*****/
 
 
+
+/*****DROPPING ANYTHING FROM DATABASE STARTS HERE*****/
 DROP TABLE ProjectPhotos;
 DROP TABLE Project;
--- DROP TABLE Engineer_Certifications;
--- DROP TABLE Engineer_Degrees;
--- DROP TABLE Admin_Added_User;
--- DROP TABLE Admin_Deleted_User;
+DROP TABLE Engineer_Certifications;
+DROP TABLE Engineer_Degrees;
 DROP TABLE Admin;
 DROP TABLE Engineer;
 DROP TABLE Donator;
 DROP TABLE Staff;
 DROP TABLE Users;
-
+/*****DROPPING ANYTHING FROM DATABASE ENDS HERE*****/
 
 
