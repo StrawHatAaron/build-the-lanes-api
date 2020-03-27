@@ -169,6 +169,7 @@ BEGIN
 --         the extra queries for deep sub-classes pertained to this
 --         table
 
+
         INSERT INTO Staff(email, title)
         VALUES (@new_email, @new_title);
         INSERT INTO Engineer (email, type)
