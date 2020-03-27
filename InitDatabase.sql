@@ -9,7 +9,7 @@ User: admin
 Password: [Ask an Author]
 ***********************************************************************************/
 
-/*****TABLE CREATION STARTS HERE*****/
+/**********TABLE CREATION STARTS HERE**********/
 CREATE TABLE Project(
     project_num INTEGER NOT NULL IDENTITY, /*IDENTITY AUTO INCREMENTS*/
     start_date DATE NOT NULL,
@@ -91,7 +91,7 @@ CREATE TABLE Engineer(
 CREATE TABLE Engineer_Certifications(
     email VARCHAR(320) NOT NULL,
     certification VARCHAR(256),
-    PRIMARY KEY (email),
+    PRIMARY KEY (email, certification),
     FOREIGN KEY (email) REFERENCES Engineer(email)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
@@ -99,7 +99,7 @@ CREATE TABLE Engineer_Certifications(
 CREATE TABLE Engineer_Degrees(
     email VARCHAR(320) NOT NULL,
     degree VARCHAR(256),
-    PRIMARY KEY (email),
+    PRIMARY KEY (email, degree),
     FOREIGN KEY (email) REFERENCES Engineer(email)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
@@ -126,11 +126,68 @@ CREATE TABLE Admin_Deleted_User(
 		ON UPDATE CASCADE,
 );
 /*****ROLE BASED AUTH PROFILES SECTION ENDS HERE*****/
-/*****TABLE CREATION ENDS HERE*****/
+/**********TABLE CREATION ENDS HERE**********/
 
 
 
-/*****DATA INSERTION STARTS HERE*****/
+/**********PERSISTENT STORED MODULES START HERE**********/
+/***TRIGGER CREATION STARTS HERE***/
+
+CREATE TRIGGER User_Created_Check
+ON Users
+AFTER INSERT
+AS
+BEGIN
+    SET NOCOUNT ON
+
+    DECLARE @new_email VARCHAR(320)
+	DECLARE @new_roles VARCHAR (2)/*d=Donator | s=Staff | e=Engineer | a=Admin   so...  ads=[Staff, Donator, Admin]*/
+	DECLARE @new_amount_donated MONEY/*For: Donator */
+	DECLARE @new_title VARCHAR(128)/*For: Staff */
+	DECLARE @new_type VARCHAR(256)/*For: Engineer */
+	DECLARE @new_created DATETIME/*For: Admin */
+
+    SET @new_email = (SELECT email FROM inserted)
+    SET @new_roles = (SELECT roles FROM inserted)
+    SET @new_amount_donated = (SELECT amount_donated FROM inserted)
+    SET @new_title = (SELECT title FROM inserted)
+    SET @new_type = (SELECT type FROM inserted)
+    SET @new_created = (SELECT created FROM inserted)
+    -- a d s e ad ed sd
+    IF @new_roles = 'd'
+        INSERT INTO Donator(email, amount_donated)
+        VALUES (@new_roles, @new_amount_donated);
+    ELSE IF @new_roles = 's'
+        INSERT INTO Staff(email, title)
+        VALUES (@new_email, @new_title);
+    ELSE IF @new_roles = 'e'
+
+
+--         it has become obvious to me that instead of a nested if
+--         statement i should just use more triggers for each table.
+--         it will be much MUCH more optimized that way by not making
+--         the extra queries for deep sub-classes pertained to this
+--         table
+
+        INSERT INTO Staff(email, title)
+        VALUES (@new_email, @new_title);
+        INSERT INTO Engineer (email, type)
+        VALUES (@new_email, @new_type);
+    ELSE IF @new_roles = 'a'
+    ELSE IF @new_roles = 'sd'
+    ELSE IF @new_roles = 'ed'
+    ELSE IF @new_roles = 'sd'
+END
+/*****TRIGGER CREATION ENDS    HERE*****/
+
+
+/***STORED PROCEDURES STARTS HERE***/
+/***STORED PROCEDURES ENDS   HERE***/
+/**********PERSISTENT STORED MODULES END HERE**********/
+
+
+
+/**********DATA INSERTION STARTS HERE**********/
 /*****INSERTION TEST DATA STARTS HERE*****/
 INSERT INTO Project (start_date, status, city, zip_code)
 VALUES  ('04-09-2001',  'NEW',          'Vacaville',    '95688'),
@@ -149,85 +206,80 @@ VALUES ('https://avatars2.githubusercontent.com/u/25778774?s=400&u=9d632b219a820
        ('https://avatars3.githubusercontent.com/u/44451183?s=400&v=4',
         3, 'Photo 3');
 
-INSERT INTO Users (email, password, token, f_name, l_name,
-	/*d=Donator | s=Staff | e=Engineer | a=Admin   so...  ads=[Staff, Donator, Admin]*/
-	roles,
-	/*For: Donator */
-	amount_donated,
-	/*For: Staff */
-	title,
-	/*For: Engineer */
-	type,
-	/*For: Admin */
-	created)
-VALUES
-    /*For: Admin Donator */
-    ('admin@test.com',              'password', '', 'admin',                'test', 'a',
-    10.00,                          'Title',       'Software Developer',    GETDATE()),
-    /*For: Donator */
-    ('donator@test.com',            'password', '', 'donator',              'test', 'd',
-    NULL,                           NULL,           NULL,                   NULL),
-    /*For: Staff */
-    ('staff@test.com',              'password', '', 'staff',                'test', 's',
-    NULL,                           'Title',        NULL,                   NULL),
-    /*For: Engineer */
-    ('engineer@test.com',           'password', '', 'engineer',             'test', 'e',
-    NULL,                           'Title',        NULL,                   NULL),
-    /*For: Admin Donantor */
-    ('admin_donator@test.com',      'password', '', 'admin_donator',        'test', 'ad',
-    20.00,                          'Title',        'Database Admin',       NULL),
-    /*For: Engineer Donator */
-    ('engineer_donator@test.com',   'password', '', 'engineer_donator',     'test', 'ed',
-    30.00,                          'Title',        NULL,                   GETDATE()),
-    /*For: Staff Donator */
-    ('staff_donator@test.com',      'password', '', 'engineer_donator',     'test', 'sd',
-    40.00,                          'Title',        NULL,                   NULL);
+/* Needs to be seperate because of the User_Created_Check trigger*/
+/*For: Admin Donator */
+INSERT INTO Users (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
+VALUES ('admin@test.com',              'password', '', 'admin',                'test', 'a',
+        10.00,                          'Title',       'Software Developer',    GETDATE());
+/*For: Donator */
+INSERT INTO Users (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
+VALUES ('donator@test.com',            'password', '', 'donator',              'test', 'd',
+        0.00,                           NULL,           NULL,                   NULL);
+/*For: Staff */
+INSERT INTO Users (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
+VALUES ('staff@test.com',              'password', '', 'staff',                'test', 's',
+        NULL,                          'Title',         NULL,                   NULL)
+/*For: Engineer */
+INSERT INTO Users (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
+VALUES ('engineer@test.com',           'password', '', 'engineer',             'test', 'e',
+        NULL,                          'Title',         NULL,                   NULL);
+/*For: Admin Donantor */
+INSERT INTO Users (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
+VALUES ('admin_donator@test.com',      'password', '', 'admin_donator',        'test', 'ad',
+        20.00,                         'Title',        'Database Admin',       NULL);
+/*For: Engineer Donator */
+INSERT INTO Users (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
+VALUES ('engineer_donator@test.com',   'password', '', 'engineer_donator',     'test', 'ed',
+        30.00,                         'Title',         NULL,                   GETDATE())
+/*For: Staff Donator */
+INSERT INTO Users (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
+VALUES ('staff_donator@test.com',      'password', '', 'engineer_donator',     'test', 'sd',
+        40.00,                         'Title',         NULL,                   NULL);
 
-INSERT INTO Engineer_Certifications(email, certification)
-VALUES ();
-
-INSERT INTO Engineer_Degrees(email, degree)
-VALUES();
-
-INSERT INTO Admin_Added_User(admin_email, user_email, timestamp)
-VALUES ();
-
-INSERT INTO Admin_Deleted_User(admin_email, user_email, timestamp)
-VALUES();
+-- INSERT INTO Engineer_Certifications(email, certification)
+-- VALUES ('engineer@test.com',            'Certified Recycling Systems - Technical Associate'),
+--        ('engineer@test.com',            'Diplomate, Geotechnical Engineering'),
+--        ('engineer_donator@test.com',    'Certified Planning Engineer'),
+--        ('engineer_donator@test.com',    'Certified Healthcare Constructor');
+--
+-- INSERT INTO Engineer_Degrees(email, degree)
+-- VALUES ('engineer@test.com',            'BS in Civil Engineering'),
+--        ('engineer@test.com',            'MS in Transportation Engineering'),
+--        ('engineer_donator@test.com',    'BS in Civil Engineering'),
+--        ('engineer_donator@test.com',    'MS in Water Resources Engineering');
+--
+-- INSERT INTO Admin_Added_User(admin_email, user_email, timestamp)
+-- VALUES ('admin@test.com',       'test1@test.com', GETDATE()),
+--        ('admin@test.com',       'test2@test.com', GETDATE()),
+--        ('admin_donator@test',   'test3@test.com', GETDATE()),
+--        ('admin_donator@test',   'test4@test.com', GETDATE());
+--
+-- INSERT INTO Admin_Deleted_User(admin_email, user_email, timestamp)
+-- VALUES ('admin@test.com',       'test1@test.com', GETDATE()),
+--        ('admin@test.com',       'test2@test.com', GETDATE()),
+--        ('admin_donator@test',   'test3@test.com', GETDATE()),
+--        ('admin_donator@test',   'test4@test.com', GETDATE());
 /*****INSERTION TEST DATA ENDS HERE*****/
-/*****DATA INSERTION ENDS HERE*****/
+/**********DATA INSERTION ENDS HERE**********/
 
 
 
-/*****PERSISTENT STORED MODULES START HERE*****/
-/***DATA INSERTION STARTS HERE***/
--- CREATE TRIGGER [schema_name.]trigger_name
--- ON table_name
--- AFTER  {[INSERT],[UPDATE],[DELETE]}
--- [NOT FOR REPLICATION]
--- AS
--- {sql_statements}
-/*****DATA INSERTION ENDS    HERE*****/
 
-
-/***STORED PROCEDURES STARTS HERE***/
-/***STORED PROCEDURES ENDS   HERE***/
-/*****PERSISTENT STORED MODULES END HERE*****/
-
-
-
-/*****QUERIES STARTS HERE*****/
+/**********QUERIES STARTS HERE**********/
 /***Basic Queries*****/
-SELECT * FROM Project as Projects;
-SELECT * FROM Users AS Users;
+SELECT * FROM Project;
+SELECT * FROM Project_Photos;
+SELECT * FROM Users;
+SELECT * FROM Donator;
+SELECT * FROM Staff;
 /***Join Queries*****/
 
-/***Named Queries*****/
+/********Named Queries**********/
 /*****QUERIES ENDS HERE*****/
 
 
 
-/*****DROPPING ANYTHING FROM DATABASE STARTS HERE*****/
+/**********DROPPING ANYTHING FROM DATABASE STARTS HERE**********/
 DROP TABLE Project_Photos;
 DROP TABLE Project;
 DROP TABLE Engineer_Certifications;
@@ -239,6 +291,7 @@ DROP TABLE Engineer;
 DROP TABLE Donator;
 DROP TABLE Staff;
 DROP TABLE Users;
+DROP TRIGGER User_Created_Check;
 /*****DROPPING ANYTHING FROM DATABASE ENDS HERE*****/
 
 
