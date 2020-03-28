@@ -9,6 +9,24 @@ User: admin
 Password: [Ask an Author]
 ***********************************************************************************/
 
+
+DECLARE @donator_role VARCHAR(2);
+DECLARE @staff_role VARCHAR(2);
+DECLARE @engineer_role VARCHAR(2);
+DECLARE @admin_role VARCHAR(2);
+DECLARE @staff_donator_role VARCHAR(2);
+DECLARE @engineer_donator_role VARCHAR(2);
+DECLARE @admin_donator_role VARCHAR(2);
+-- a d s e ad ed sd
+SET @donator_role = 'd';
+SET @staff_role = 's';
+SET @engineer_role = 'e';
+SET @admin_role = 'a';
+SET @staff_donator_role = 'sd';
+SET @engineer_donator_role = 'ed';
+SET @admin_donator_role = 'sd';
+
+
 /**********TABLE CREATION STARTS HERE**********/
 CREATE TABLE Project(
     project_num INTEGER NOT NULL IDENTITY, /*IDENTITY AUTO INCREMENTS*/
@@ -52,6 +70,11 @@ CREATE TABLE Users(
 /***May be used in with "Users" table to create Named Queries***/
 CREATE TABLE Donator(
 	email VARCHAR(320) NOT NULL,
+	password VARCHAR(64) NOT NULL,
+	token VARCHAR(320),
+	f_name VARCHAR(64) NOT NULL,
+	l_name VARCHAR(64) NOT NULL,
+	roles VARCHAR (2) NOT NULL,
 	amount_donated MONEY NOT NULL,
 	PRIMARY KEY (email),
 	FOREIGN KEY (email) REFERENCES Users(email)
@@ -61,7 +84,14 @@ CREATE TABLE Donator(
 
 CREATE TABLE Staff(
 	email VARCHAR(320) NOT NULL,
+	password VARCHAR(64) NOT NULL,
+	token VARCHAR(320),
+	f_name VARCHAR(64) NOT NULL,
+	l_name VARCHAR(64) NOT NULL,
+	roles VARCHAR (2) NOT NULL,
 	title VARCHAR(128) NOT NULL,
+	type VARCHAR(256),
+	created DATETIME,
 	PRIMARY KEY (email),
 	FOREIGN KEY (email) REFERENCES Users(email)
 		ON DELETE CASCADE
@@ -70,7 +100,13 @@ CREATE TABLE Staff(
 
 CREATE TABlE Admin(
     email VARCHAR(320) NOT NULL,
-    created DATETIME NOT NULL
+	password VARCHAR(64) NOT NULL,
+	token VARCHAR(320),
+	f_name VARCHAR(64) NOT NULL,
+	l_name VARCHAR(64) NOT NULL,
+	roles VARCHAR (2) NOT NULL,
+	title VARCHAR(128) NOT NULL,
+	created DATETIME NOT NULL,
     PRIMARY KEY (email),
 	FOREIGN KEY (email) REFERENCES Staff(email)
 		ON DELETE CASCADE
@@ -79,7 +115,13 @@ CREATE TABlE Admin(
 
 CREATE TABLE Engineer(
     email VARCHAR(320) NOT NULL,
-    type VARCHAR(256) NOT NULL
+	password VARCHAR(64) NOT NULL,
+	token VARCHAR(320),
+	f_name VARCHAR(64) NOT NULL,
+	l_name VARCHAR(64) NOT NULL,
+	roles VARCHAR (2) NOT NULL,
+	title VARCHAR(128) NOT NULL,
+	type VARCHAR(256) NOT NULL,
     PRIMARY KEY (email),
 	FOREIGN KEY (email) REFERENCES Staff(email)
 		ON DELETE CASCADE
@@ -132,53 +174,43 @@ CREATE TABLE Admin_Deleted_User(
 
 /**********PERSISTENT STORED MODULES START HERE**********/
 /***TRIGGER CREATION STARTS HERE***/
-
 CREATE TRIGGER User_Created_Check
 ON Users
 AFTER INSERT
 AS
 BEGIN
     SET NOCOUNT ON
+	DECLARE @new_email VARCHAR(320);
+	DECLARE @new_password VARCHAR(64);
+	DECLARE @new_token VARCHAR(320);
+	DECLARE @new_f_name VARCHAR(64);
+	DECLARE @new_l_name VARCHAR(64);
+	DECLARE @new_roles VARCHAR (2);
+	DECLARE @new_amount_donated MONEY;
+	DECLARE @new_title VARCHAR(128);
+	DECLARE @new_type VARCHAR(256);
+	DECLARE @new_created DATETIME;
 
-    DECLARE @new_email VARCHAR(320)
-	DECLARE @new_roles VARCHAR (2)/*d=Donator | s=Staff | e=Engineer | a=Admin   so...  ads=[Staff, Donator, Admin]*/
-	DECLARE @new_amount_donated MONEY/*For: Donator */
-	DECLARE @new_title VARCHAR(128)/*For: Staff */
-	DECLARE @new_type VARCHAR(256)/*For: Engineer */
-	DECLARE @new_created DATETIME/*For: Admin */
+    SET @new_email = (SELECT email FROM Users);
+	SET @new_password = (SELECT password FROM Users);
+	SET @new_token = (SELECT token FROM Users);
+	SET @new_f_name = (SELECT f_name FROM Users);
+	SET @new_l_name = (SELECT l_name FROM Users);
+	SET @new_roles = (SELECT roles FROM Users);
+	SET @new_amount_donated = (SELECT amount_donated FROM Users);
+	SET @new_title = (SELECT title FROM Users);
+	SET @new_type = (SELECT type FROM Users);
+	SET @new_created = (SELECT created FROM Users);
 
-    SET @new_email = (SELECT email FROM inserted)
-    SET @new_roles = (SELECT roles FROM inserted)
-    SET @new_amount_donated = (SELECT amount_donated FROM inserted)
-    SET @new_title = (SELECT title FROM inserted)
-    SET @new_type = (SELECT type FROM inserted)
-    SET @new_created = (SELECT created FROM inserted)
-    -- a d s e ad ed sd
-    IF @new_roles = 'd'
-        INSERT INTO Donator(email, amount_donated)
-        VALUES (@new_roles, @new_amount_donated);
-    ELSE IF @new_roles = 's'
-        INSERT INTO Staff(email, title)
-        VALUES (@new_email, @new_title);
-    ELSE IF @new_roles = 'e'
-
-
---         it has become obvious to me that instead of a nested if
---         statement i should just use more triggers for each table.
---         it will be much MUCH more optimized that way by not making
---         the extra queries for deep sub-classes pertained to this
---         table
-
-
-        INSERT INTO Staff(email, title)
-        VALUES (@new_email, @new_title);
-        INSERT INTO Engineer (email, type)
-        VALUES (@new_email, @new_type);
-    ELSE IF @new_roles = 'a'
-    ELSE IF @new_roles = 'sd'
-    ELSE IF @new_roles = 'ed'
-    ELSE IF @new_roles = 'sd'
+    IF @new_roles = @donator_role  OR @new_roles = @staff_donator_role OR
+       @new_roles = @engineer_donator_role OR @new_roles = @admin_donator_role
+        INSERT INTO Donator(email, password, token, f_name, l_name, roles, amount_donated)
+        VALUES (@new_email, @new_password, @new_token, @new_f_name, @new_l_name, @new_roles, @new_amount_donated);
+    IF @new_roles = @staff_role
+        INSERT INTO Staff(email, password, token, f_name, l_name, roles, title, type, created)
+        VALUES (@new_email, @new_password, @new_token, @new_f_name, @new_l_name, @new_roles, @new_title, @new_type, @new_created);
 END
+
 /*****TRIGGER CREATION ENDS    HERE*****/
 
 
