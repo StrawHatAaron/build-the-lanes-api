@@ -10,23 +10,6 @@ Password: [Ask an Author]
 ***********************************************************************************/
 
 
-DECLARE @donator_role VARCHAR(2);
-DECLARE @staff_role VARCHAR(2);
-DECLARE @engineer_role VARCHAR(2);
-DECLARE @admin_role VARCHAR(2);
-DECLARE @staff_donator_role VARCHAR(2);
-DECLARE @engineer_donator_role VARCHAR(2);
-DECLARE @admin_donator_role VARCHAR(2);
--- a d s e ad ed sd
-SET @donator_role = 'd';
-SET @staff_role = 's';
-SET @engineer_role = 'e';
-SET @admin_role = 'a';
-SET @staff_donator_role = 'sd';
-SET @engineer_donator_role = 'ed';
-SET @admin_donator_role = 'sd';
-
-
 /**********TABLE CREATION STARTS HERE**********/
 CREATE TABLE Project(
     project_num INTEGER NOT NULL IDENTITY, /*IDENTITY AUTO INCREMENTS*/
@@ -171,9 +154,14 @@ CREATE TABLE Admin_Deleted_User(
 /**********TABLE CREATION ENDS HERE**********/
 
 
+GO -- This GO statement is required to end the query statements and differ between creation of Tables and Triggers
+
 
 /**********PERSISTENT STORED MODULES START HERE**********/
 /***TRIGGER CREATION STARTS HERE***/
+
+
+
 CREATE TRIGGER User_Created_Check
 ON Users
 AFTER INSERT
@@ -202,13 +190,28 @@ BEGIN
 	SET @new_type = (SELECT type FROM Users);
 	SET @new_created = (SELECT created FROM Users);
 
-    IF @new_roles = @donator_role  OR @new_roles = @staff_donator_role OR
-       @new_roles = @engineer_donator_role OR @new_roles = @admin_donator_role
+    IF @new_roles = 'd'  OR
+       @new_roles = 'sd' OR
+       @new_roles = 'ed' OR
+       @new_roles = 'ad'
         INSERT INTO Donator(email, password, token, f_name, l_name, roles, amount_donated)
         VALUES (@new_email, @new_password, @new_token, @new_f_name, @new_l_name, @new_roles, @new_amount_donated);
-    IF @new_roles = @staff_role
+    IF @new_roles = 's' OR
+       @new_roles = 'sd' OR
+       @new_roles = 'e' OR
+       @new_roles = 'a' OR
+       @new_roles = 'ed' OR
+       @new_roles = 'ad'
         INSERT INTO Staff(email, password, token, f_name, l_name, roles, title, type, created)
         VALUES (@new_email, @new_password, @new_token, @new_f_name, @new_l_name, @new_roles, @new_title, @new_type, @new_created);
+    IF @new_roles = 'er' OR
+       @new_roles = 'ed'
+       INSERT INTO Engineer(email, password, token, f_name, l_name, roles, title, type)
+       VALUES (@new_email, @new_password, @new_token, @new_f_name, @new_l_name, @new_roles, @new_title, @new_type)
+    IF @new_roles = 'a' OR
+       @new_roles = 'ad'
+       INSERT INTO Admin(email, password, token, f_name, l_name, roles, title, created)
+       VALUES (@new_email, @new_password, @new_token, @new_f_name, @new_l_name, @new_roles, @new_title, @new_created)
 END
 
 /*****TRIGGER CREATION ENDS    HERE*****/
@@ -222,6 +225,24 @@ END
 
 /**********DATA INSERTION STARTS HERE**********/
 /*****INSERTION TEST DATA STARTS HERE*****/
+-- I made some constants to help you guys with the insert statements
+DECLARE @donator_role VARCHAR(2)
+DECLARE @staff_role VARCHAR(2)
+DECLARE @engineer_role VARCHAR(2)
+DECLARE @admin_role VARCHAR(2)
+DECLARE @staff_donator_role VARCHAR(2)
+DECLARE @engineer_donator_role VARCHAR(2)
+DECLARE @admin_donator_role VARCHAR(2)
+-- a d s e ad ed sd
+SET @donator_role = 'd'
+SET @staff_role = 's'
+SET @engineer_role = 'e'
+SET @admin_role = 'a'
+SET @staff_donator_role = 'sd'
+SET @engineer_donator_role = 'ed'
+SET @admin_donator_role = 'sd'
+
+
 INSERT INTO Project (start_date, status, city, zip_code)
 VALUES  ('04-09-2001',  'NEW',          'Vacaville',    '95688'),
         ('2001-03-09',	'NEW',	        'Rocklin',	    '95765'),
@@ -242,31 +263,31 @@ VALUES ('https://avatars2.githubusercontent.com/u/25778774?s=400&u=9d632b219a820
 /* Needs to be seperate because of the User_Created_Check trigger*/
 /*For: Admin Donator */
 INSERT INTO Users (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
-VALUES ('admin@test.com',              'password', '', 'admin',                'test', 'a',
+VALUES ('admin@test.com',              'password', '', 'admin',                'test', @admin_role,
         10.00,                          'Title',       'Software Developer',    GETDATE());
 /*For: Donator */
 INSERT INTO Users (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
-VALUES ('donator@test.com',            'password', '', 'donator',              'test', 'd',
+VALUES ('donator@test.com',            'password', '', 'donator',              'test', @donator_role,
         0.00,                           NULL,           NULL,                   NULL);
 /*For: Staff */
 INSERT INTO Users (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
-VALUES ('staff@test.com',              'password', '', 'staff',                'test', 's',
+VALUES ('staff@test.com',              'password', '', 'staff',                'test', @staff_role,
         NULL,                          'Title',         NULL,                   NULL)
 /*For: Engineer */
 INSERT INTO Users (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
-VALUES ('engineer@test.com',           'password', '', 'engineer',             'test', 'e',
+VALUES ('engineer@test.com',           'password', '', 'engineer',             'test', @engineer_role,
         NULL,                          'Title',         NULL,                   NULL);
 /*For: Admin Donantor */
 INSERT INTO Users (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
-VALUES ('admin_donator@test.com',      'password', '', 'admin_donator',        'test', 'ad',
+VALUES ('admin_donator@test.com',      'password', '', 'admin_donator',        'test', @admin_donator_role,
         20.00,                         'Title',        'Database Admin',       NULL);
 /*For: Engineer Donator */
 INSERT INTO Users (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
-VALUES ('engineer_donator@test.com',   'password', '', 'engineer_donator',     'test', 'ed',
+VALUES ('engineer_donator@test.com',   'password', '', 'engineer_donator',     'test', @engineer_donator_role,
         30.00,                         'Title',         NULL,                   GETDATE())
 /*For: Staff Donator */
 INSERT INTO Users (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
-VALUES ('staff_donator@test.com',      'password', '', 'engineer_donator',     'test', 'sd',
+VALUES ('staff_donator@test.com',      'password', '', 'engineer_donator',     'test', @staff_donator_role,
         40.00,                         'Title',         NULL,                   NULL);
 
 -- INSERT INTO Engineer_Certifications(email, certification)
