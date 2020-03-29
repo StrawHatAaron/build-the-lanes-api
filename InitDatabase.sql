@@ -248,7 +248,6 @@ SET @admin_donator_role = 'ad'
 
 
 
-
 INSERT INTO Project (start_date, status, city, zip_code)
 VALUES  ('04-09-2001',  'NEW',          'Vacaville',    '95688'),
         ('2001-03-09',	'NEW',	        'Rocklin',	    '95765'),
@@ -357,7 +356,6 @@ DROP TABLE Engineer;
 DROP TABLE Donator;
 DROP TABLE Staff;
 DROP TABLE Users;
-DROP TRIGGER User_Created_Check;
 -- DROP TRIGGER User_Updated_Check;
 /*****DROPPING ANYTHING FROM DATABASE ENDS HERE*****/
 

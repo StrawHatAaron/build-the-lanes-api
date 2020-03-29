@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Configuration;
 using BuildTheLanesAPI.Services;
 using BuildTheLanesAPI.Entities;
 using BuildTheLanesAPI.Models;
@@ -12,11 +13,23 @@ namespace BuildTheLanesAPI.Controllers
     [Route(Constants.api + "/[controller]")]
     public class UsersController : ControllerBase
     {
+
+        public IConfiguration Configuration { get; }
+        private readonly string connectionString;
         private IUserService _userService;
 
-        public UsersController(IUserService userService)
+        public UsersController(IConfiguration configuration, IUserService userService)
         {
+            Configuration = configuration;
+            connectionString = Configuration["ConnectionStrings:DefaultConnection"];
             _userService = userService;
+        }
+
+        [AllowAnonymous]
+        [HttpPost("post")]
+        public IActionResult PostDonator()
+        {
+            
         }
 
         [AllowAnonymous]
@@ -56,13 +69,6 @@ namespace BuildTheLanesAPI.Controllers
                 return NotFound();
 
             return Ok(user);
-        }
-
-
-        [HttpPost("post")]
-        public IActionResult PostUser()
-        {
-            return NotFound();
         }
     }
 }
