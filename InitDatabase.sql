@@ -121,6 +121,7 @@ CREATE TABLE Engineer_Certifications(
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
 );
+
 CREATE TABLE Engineer_Degrees(
     email VARCHAR(320) NOT NULL,
     degree VARCHAR(256),
@@ -135,7 +136,7 @@ CREATE TABLE Admin_Added_User(
     admin_email VARCHAR(320) NOT NULL,
     user_email  VARCHAR(320) NOT NULL,
     timestamp DATETIME,
-    PRIMARY KEY (admin_email),
+    PRIMARY KEY (admin_email, user_email),
 	FOREIGN KEY (admin_email) REFERENCES Admin(email)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE,
@@ -179,16 +180,16 @@ BEGIN
 	DECLARE @new_type VARCHAR(256);
 	DECLARE @new_created DATETIME;
 
-    SET @new_email = (SELECT email FROM Users);
-	SET @new_password = (SELECT password FROM Users);
-	SET @new_token = (SELECT token FROM Users);
-	SET @new_f_name = (SELECT f_name FROM Users);
-	SET @new_l_name = (SELECT l_name FROM Users);
-	SET @new_roles = (SELECT roles FROM Users);
-	SET @new_amount_donated = (SELECT amount_donated FROM Users);
-	SET @new_title = (SELECT title FROM Users);
-	SET @new_type = (SELECT type FROM Users);
-	SET @new_created = (SELECT created FROM Users);
+    SET @new_email = (SELECT email FROM Inserted);
+	SET @new_password = (SELECT password FROM Inserted);
+	SET @new_token = (SELECT token FROM Inserted);
+	SET @new_f_name = (SELECT f_name FROM Inserted);
+	SET @new_l_name = (SELECT l_name FROM Inserted);
+	SET @new_roles = (SELECT roles FROM Inserted);
+	SET @new_amount_donated = (SELECT amount_donated FROM Inserted);
+	SET @new_title = (SELECT title FROM Inserted);
+	SET @new_type = (SELECT type FROM Inserted);
+	SET @new_created = (SELECT created FROM Inserted);
 
     IF @new_roles = 'd'  OR
        @new_roles = 'sd' OR
@@ -204,14 +205,14 @@ BEGIN
        @new_roles = 'ad'
         INSERT INTO Staff(email, password, token, f_name, l_name, roles, title, type, created)
         VALUES (@new_email, @new_password, @new_token, @new_f_name, @new_l_name, @new_roles, @new_title, @new_type, @new_created);
-    IF @new_roles = 'er' OR
+    IF @new_roles = 'e' OR
        @new_roles = 'ed'
-       INSERT INTO Engineer(email, password, token, f_name, l_name, roles, title, type)
-       VALUES (@new_email, @new_password, @new_token, @new_f_name, @new_l_name, @new_roles, @new_title, @new_type)
+        INSERT INTO Engineer(email, password, token, f_name, l_name, roles, title, type)
+        VALUES (@new_email, @new_password, @new_token, @new_f_name, @new_l_name, @new_roles, @new_title, @new_type)
     IF @new_roles = 'a' OR
        @new_roles = 'ad'
-       INSERT INTO Admin(email, password, token, f_name, l_name, roles, title, created)
-       VALUES (@new_email, @new_password, @new_token, @new_f_name, @new_l_name, @new_roles, @new_title, @new_created)
+        INSERT INTO Admin(email, password, token, f_name, l_name, roles, title, created)
+        VALUES (@new_email, @new_password, @new_token, @new_f_name, @new_l_name, @new_roles, @new_title, @new_created)
 END
 
 /*****TRIGGER CREATION ENDS    HERE*****/
@@ -221,6 +222,8 @@ END
 /***STORED PROCEDURES ENDS   HERE***/
 /**********PERSISTENT STORED MODULES END HERE**********/
 
+
+GO -- NEED THIS GO STATEMENT TO EXECUTE THE TRIGGER INTO THE DATABASE THEN WE CAN INSERT
 
 
 /**********DATA INSERTION STARTS HERE**********/
@@ -268,51 +271,56 @@ VALUES ('admin@test.com',              'password', '', 'admin',                '
 /*For: Donator */
 INSERT INTO Users (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
 VALUES ('donator@test.com',            'password', '', 'donator',              'test', @donator_role,
-        0.00,                           NULL,           NULL,                   NULL);
+        10.00,                           NULL,           NULL,                   NULL);
 /*For: Staff */
 INSERT INTO Users (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
 VALUES ('staff@test.com',              'password', '', 'staff',                'test', @staff_role,
-        NULL,                          'Title',         NULL,                   NULL)
+        NULL,                          'Title',          NULL,                   NULL);
 /*For: Engineer */
 INSERT INTO Users (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
 VALUES ('engineer@test.com',           'password', '', 'engineer',             'test', @engineer_role,
-        NULL,                          'Title',         NULL,                   NULL);
+        NULL,                          'Title',        'Water Resources',        NULL);
 /*For: Admin Donantor */
 INSERT INTO Users (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
 VALUES ('admin_donator@test.com',      'password', '', 'admin_donator',        'test', @admin_donator_role,
-        20.00,                         'Title',        'Database Admin',       NULL);
+        20.00,                         'Database Admin', NULL,                   GETDATE());
 /*For: Engineer Donator */
 INSERT INTO Users (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
 VALUES ('engineer_donator@test.com',   'password', '', 'engineer_donator',     'test', @engineer_donator_role,
-        30.00,                         'Title',         NULL,                   GETDATE())
+        30.00,                         'Title',          'Transportation',     NULL);
 /*For: Staff Donator */
 INSERT INTO Users (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
 VALUES ('staff_donator@test.com',      'password', '', 'engineer_donator',     'test', @staff_donator_role,
-        40.00,                         'Title',         NULL,                   NULL);
+        40.00,                         'Title',          NULL,                   NULL);
 
--- INSERT INTO Engineer_Certifications(email, certification)
--- VALUES ('engineer@test.com',            'Certified Recycling Systems - Technical Associate'),
---        ('engineer@test.com',            'Diplomate, Geotechnical Engineering'),
---        ('engineer_donator@test.com',    'Certified Planning Engineer'),
---        ('engineer_donator@test.com',    'Certified Healthcare Constructor');
---
--- INSERT INTO Engineer_Degrees(email, degree)
--- VALUES ('engineer@test.com',            'BS in Civil Engineering'),
---        ('engineer@test.com',            'MS in Transportation Engineering'),
---        ('engineer_donator@test.com',    'BS in Civil Engineering'),
---        ('engineer_donator@test.com',    'MS in Water Resources Engineering');
---
--- INSERT INTO Admin_Added_User(admin_email, user_email, timestamp)
--- VALUES ('admin@test.com',       'test1@test.com', GETDATE()),
---        ('admin@test.com',       'test2@test.com', GETDATE()),
---        ('admin_donator@test',   'test3@test.com', GETDATE()),
---        ('admin_donator@test',   'test4@test.com', GETDATE());
---
--- INSERT INTO Admin_Deleted_User(admin_email, user_email, timestamp)
--- VALUES ('admin@test.com',       'test1@test.com', GETDATE()),
---        ('admin@test.com',       'test2@test.com', GETDATE()),
---        ('admin_donator@test',   'test3@test.com', GETDATE()),
---        ('admin_donator@test',   'test4@test.com', GETDATE());
+INSERT INTO Engineer_Certifications(email, certification)
+VALUES ('engineer@test.com',            'Certified Recycling Systems - Technical Associate'),
+       ('engineer@test.com',            'Diplomate, Geotechnical Engineering'),
+       ('engineer_donator@test.com',    'Certified Planning Engineer'),
+       ('engineer_donator@test.com',    'Certified Healthcare Constructor');
+
+INSERT INTO Engineer_Degrees(email, degree)
+VALUES ('engineer@test.com',            'BS in Civil Engineering'),
+       ('engineer@test.com',            'MS in Transportation Engineering'),
+       ('engineer_donator@test.com',    'BS in Civil Engineering'),
+       ('engineer_donator@test.com',    'MS in Water Resources Engineering');
+
+
+
+
+
+
+INSERT INTO Admin_Added_User(admin_email, user_email, timestamp)
+VALUES ('admin@test.com',           'test1@test.com', GETDATE()),
+       ('admin@test.com',           'test2@test.com', GETDATE()),
+       ('admin_donator@test.com',   'test3@test.com', GETDATE()),
+       ('admin_donator@test.com',   'test4@test.com', GETDATE());
+
+INSERT INTO Admin_Deleted_User(admin_email, user_email, timestamp)
+VALUES ('admin@test.com',           'test1@test.com', GETDATE()),
+       ('admin@test.com',           'test2@test.com', GETDATE()),
+       ('admin_donator@test.com',   'test3@test.com', GETDATE()),
+       ('admin_donator@test.com',   'test4@test.com', GETDATE());
 /*****INSERTION TEST DATA ENDS HERE*****/
 /**********DATA INSERTION ENDS HERE**********/
 
@@ -326,6 +334,12 @@ SELECT * FROM Project_Photos;
 SELECT * FROM Users;
 SELECT * FROM Donator;
 SELECT * FROM Staff;
+SELECT * FROM Engineer;
+SELECT * FROM Admin;
+SELECT * FROM Engineer_Certifications;
+SELECT * FROM Engineer_Degrees;
+SELECT * FROM Admin_Added_User;
+SELECT * FROM Admin_Deleted_User;
 /***Join Queries*****/
 
 /********Named Queries**********/
