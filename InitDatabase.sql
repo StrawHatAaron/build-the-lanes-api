@@ -146,7 +146,7 @@ CREATE TABLE Admin_Deleted_User(
     admin_email VARCHAR(320) NOT NULL,
     user_email  VARCHAR(320) NOT NULL,
     timestamp DATETIME,
-    PRIMARY KEY (admin_email),
+    PRIMARY KEY (admin_email, user_email),
 	FOREIGN KEY (admin_email) REFERENCES Admin(email)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE,
@@ -215,6 +215,7 @@ BEGIN
         VALUES (@new_email, @new_password, @new_token, @new_f_name, @new_l_name, @new_roles, @new_title, @new_created)
 END
 
+
 /*****TRIGGER CREATION ENDS    HERE*****/
 
 
@@ -243,7 +244,9 @@ SET @engineer_role = 'e'
 SET @admin_role = 'a'
 SET @staff_donator_role = 'sd'
 SET @engineer_donator_role = 'ed'
-SET @admin_donator_role = 'sd'
+SET @admin_donator_role = 'ad'
+
+
 
 
 INSERT INTO Project (start_date, status, city, zip_code)
@@ -305,11 +308,6 @@ VALUES ('engineer@test.com',            'BS in Civil Engineering'),
        ('engineer_donator@test.com',    'BS in Civil Engineering'),
        ('engineer_donator@test.com',    'MS in Water Resources Engineering');
 
-
-
-
-
-
 INSERT INTO Admin_Added_User(admin_email, user_email, timestamp)
 VALUES ('admin@test.com',           'test1@test.com', GETDATE()),
        ('admin@test.com',           'test2@test.com', GETDATE()),
@@ -360,6 +358,7 @@ DROP TABLE Donator;
 DROP TABLE Staff;
 DROP TABLE Users;
 DROP TRIGGER User_Created_Check;
+-- DROP TRIGGER User_Updated_Check;
 /*****DROPPING ANYTHING FROM DATABASE ENDS HERE*****/
 
 
