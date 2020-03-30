@@ -195,7 +195,7 @@ BEGIN
        @new_roles = 'sd' OR
        @new_roles = 'ed' OR
        @new_roles = 'ad'
-        INSERT INTO Donator(email, password, token, f_name, l_name, roles, amount_donated)
+            INSERT INTO Donator(email, password, token, f_name, l_name, roles, amount_donated)
         VALUES (@new_email, @new_password, @new_token, @new_f_name, @new_l_name, @new_roles, @new_amount_donated);
     IF @new_roles = 's' OR
        @new_roles = 'sd' OR

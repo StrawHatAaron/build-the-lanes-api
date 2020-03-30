@@ -25,12 +25,7 @@ namespace BuildTheLanesAPI.Controllers
             _userService = userService;
         }
 
-        [AllowAnonymous]
-        [HttpPost("post")]
-        public IActionResult PostDonator()
-        {
-            
-        }
+        
 
         [AllowAnonymous]
         [HttpPost("authenticate")]

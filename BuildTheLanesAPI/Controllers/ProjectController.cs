@@ -27,7 +27,7 @@ namespace BuildTheLanesAPI.Controllers
         }
 
 
-        [Authorize(Roles = Roles.User)]
+        [Authorize(Roles = Roles.Admin)]
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -124,16 +124,16 @@ namespace BuildTheLanesAPI.Controllers
                     try
                     {
                         command.ExecuteNonQuery();
+                        connection.Close();
+                        return Ok();
                     }
-                    catch (SqlException ex)
+                    catch (SqlException e)
                     {
-                        //ViewBag.Result = "Operation got error:" + ex.Message;
+                        connection.Close();
+                        return BadRequest(e);
                     }
-                    connection.Close();
                 }
             }
-
-            return RedirectToAction("Index");
         }
     }
 }
