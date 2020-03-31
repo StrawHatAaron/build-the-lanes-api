@@ -35,5 +35,6 @@
     <Folder Include="Entities\" />
     <Folder Include="Helpers\" />
     <Folder Include="Services\" />
+    <Folder Include="Models\Users\" />
   </ItemGroup>
 </Project>

@@ -21,6 +21,8 @@ namespace BuildTheLanesAPI.Services
 
     public class UserService : IUserService
     {
+        private DataContext _context;
+
         // users hardcoded for simplicity, store in a db with hashed passwords in production applications
         private List<User> _users = new List<User>
         {

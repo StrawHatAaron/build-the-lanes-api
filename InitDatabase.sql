@@ -191,6 +191,18 @@ BEGIN
 	SET @new_type = (SELECT type FROM Inserted);
 	SET @new_created = (SELECT created FROM Inserted);
 
+    IF @new_roles != 'd' AND
+       @new_roles != 's' AND
+       @new_roles != 'e' AND
+       @new_roles != 'a' AND
+       @new_roles != 'sd' AND
+       @new_roles != 'ed' AND
+       @new_roles != 'ad'
+        BEGIN
+            THROW 51000, 'The Role entered does not exist', 1;
+            ROLLBACK TRANSACTION
+        END
+
     IF @new_roles = 'd'  OR
        @new_roles = 'sd' OR
        @new_roles = 'ed' OR
@@ -213,6 +225,7 @@ BEGIN
        @new_roles = 'ad'
         INSERT INTO Admin(email, password, token, f_name, l_name, roles, title, created)
         VALUES (@new_email, @new_password, @new_token, @new_f_name, @new_l_name, @new_roles, @new_title, @new_created)
+
 END
 
 
@@ -225,6 +238,10 @@ END
 
 
 GO -- NEED THIS GO STATEMENT TO EXECUTE THE TRIGGER INTO THE DATABASE THEN WE CAN INSERT
+
+
+
+
 
 
 /**********DATA INSERTION STARTS HERE**********/
@@ -245,8 +262,6 @@ SET @admin_role = 'a'
 SET @staff_donator_role = 'sd'
 SET @engineer_donator_role = 'ed'
 SET @admin_donator_role = 'ad'
-
-
 
 INSERT INTO Project (start_date, status, city, zip_code)
 VALUES  ('04-09-2001',  'NEW',          'Vacaville',    '95688'),
