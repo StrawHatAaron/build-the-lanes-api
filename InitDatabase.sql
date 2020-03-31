@@ -115,7 +115,7 @@ CREATE TABLE Engineer(
           Multiple degrees/certifications. ***/
 CREATE TABLE Engineer_Certifications(
     email VARCHAR(320) NOT NULL,
-    certification VARCHAR(256),
+    certification VARCHAR(256), 
     PRIMARY KEY (email, certification),
     FOREIGN KEY (email) REFERENCES Engineer(email)
 		ON DELETE CASCADE
