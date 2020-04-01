@@ -1,3 +1,5 @@
+create database webapp;
+
 use webapp;
 
 /**********************************************************************************
@@ -8,6 +10,23 @@ Host: build-the-lanes-0.cz837oegnsiw.us-west-1.rds.amazonaws.com,1433
 User: admin
 Password: [Ask an Author]
 ***********************************************************************************/
+
+
+-- testing
+CREATE TABLE [User](
+  Id INT,
+  FirstName VARCHAR(64),
+  LastName VARCHAR(64),
+  PasswordHash VARCHAR(MAX),
+  PasswordSalt VARCHAR(MAX),
+  Username VARCHAR(64)
+  PRIMARY KEY (Id)
+);
+SELECT * FROM [User];
+-- testing
+
+
+
 
 
 /**********TABLE CREATION STARTS HERE**********/
@@ -115,7 +134,7 @@ CREATE TABLE Engineer(
           Multiple degrees/certifications. ***/
 CREATE TABLE Engineer_Certifications(
     email VARCHAR(320) NOT NULL,
-    certification VARCHAR(256), 
+    certification VARCHAR(256),
     PRIMARY KEY (email, certification),
     FOREIGN KEY (email) REFERENCES Engineer(email)
 		ON DELETE CASCADE

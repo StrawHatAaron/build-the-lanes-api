@@ -7,8 +7,8 @@ namespace BuildTheLanesAPI.Entities
     {
         public int Id { get; set; }
         public string Email { get; set; }
-        public string Password { get; set; }
-        public string Token { get; set; }
+        public byte[] PasswordHash { get; set; }
+        public byte[] PasswordSalt { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Roles { get; set; }
@@ -20,9 +20,5 @@ namespace BuildTheLanesAPI.Entities
         public string Type { get; set; }
         /*For: Admin */
         public string Created { get; set; }
-
-
-        public byte[] PasswordHash { get; set; }
-        public byte[] PasswordSalt { get; set; }
     }
 }
