@@ -13,7 +13,8 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System;
 
-namespace WebApi
+
+namespace BuildTheLanesAPI
 {
     public class Startup
     {
