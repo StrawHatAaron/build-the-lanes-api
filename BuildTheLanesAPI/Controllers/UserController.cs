@@ -38,10 +38,10 @@ namespace BuildTheLanesAPI.Controllers
         [HttpPost("authenticate")]
         public IActionResult Authenticate([FromBody]AuthenticateModel model)
         {
-            var user = _userService.Authenticate(model.Email, model.Password);
+            var user = _userService.Authenticate(model.email, model.Password);
 
             if (user == null)
-                return BadRequest(new { message = "Email or password is incorrect" });
+                return BadRequest(new { message = "email or password is incorrect" });
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
@@ -62,9 +62,9 @@ namespace BuildTheLanesAPI.Controllers
             return Ok(new
             {
                 id = user.id,
-                Email = user.Email,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
+                email = user.email,
+                first_name = user.first_name,
+                last_name = user.last_name,
                 Token = tokenString
             });
         }

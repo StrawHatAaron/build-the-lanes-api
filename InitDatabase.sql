@@ -1,3 +1,5 @@
+create database webapp;
+
 use webapp;
 
 /**********************************************************************************
@@ -31,9 +33,10 @@ CREATE TABLE Project_Photos(
 );
 
 /*****ROLE BASED AUTH PROFILES SECTION STARTS HERE*****/
-CREATE TABLE Users(
+CREATE TABLE [Users](
 	email VARCHAR(320) NOT NULL,
-	password VARCHAR(64) NOT NULL,
+	password_salt VARCHAR(max) NOT NULL,
+	password_hash VARCHAR(max) NOT NULL,
 	token VARCHAR(320),
 	f_name VARCHAR(64) NOT NULL,
 	l_name VARCHAR(64) NOT NULL,
@@ -60,7 +63,7 @@ CREATE TABLE Donator(
 	roles VARCHAR (2) NOT NULL,
 	amount_donated MONEY NOT NULL,
 	PRIMARY KEY (email),
-	FOREIGN KEY (email) REFERENCES Users(email)
+	FOREIGN KEY (email) REFERENCES [Users](email)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
 );
@@ -76,7 +79,7 @@ CREATE TABLE Staff(
 	type VARCHAR(256),
 	created DATETIME,
 	PRIMARY KEY (email),
-	FOREIGN KEY (email) REFERENCES Users(email)
+	FOREIGN KEY (email) REFERENCES [Users](email)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
 );
@@ -164,7 +167,7 @@ GO -- This GO statement is required to end the query statements and differ betwe
 
 
 CREATE TRIGGER User_Created_Check
-ON Users
+ON [Users]
 AFTER INSERT
 AS
 BEGIN
@@ -191,6 +194,18 @@ BEGIN
 	SET @new_type = (SELECT type FROM Inserted);
 	SET @new_created = (SELECT created FROM Inserted);
 
+    IF @new_roles != 'd' AND
+       @new_roles != 's' AND
+       @new_roles != 'e' AND
+       @new_roles != 'a' AND
+       @new_roles != 'sd' AND
+       @new_roles != 'ed' AND
+       @new_roles != 'ad'
+        BEGIN
+            THROW 51000, 'The Role entered does not exist', 1;
+            ROLLBACK TRANSACTION
+        END
+
     IF @new_roles = 'd'  OR
        @new_roles = 'sd' OR
        @new_roles = 'ed' OR
@@ -213,6 +228,7 @@ BEGIN
        @new_roles = 'ad'
         INSERT INTO Admin(email, password, token, f_name, l_name, roles, title, created)
         VALUES (@new_email, @new_password, @new_token, @new_f_name, @new_l_name, @new_roles, @new_title, @new_created)
+
 END
 
 
@@ -225,6 +241,10 @@ END
 
 
 GO -- NEED THIS GO STATEMENT TO EXECUTE THE TRIGGER INTO THE DATABASE THEN WE CAN INSERT
+
+
+
+
 
 
 /**********DATA INSERTION STARTS HERE**********/
@@ -246,8 +266,6 @@ SET @staff_donator_role = 'sd'
 SET @engineer_donator_role = 'ed'
 SET @admin_donator_role = 'ad'
 
-
-
 INSERT INTO Project (start_date, status, city, zip_code)
 VALUES  ('04-09-2001',  'NEW',          'Vacaville',    '95688'),
         ('2001-03-09',	'NEW',	        'Rocklin',	    '95765'),
@@ -267,33 +285,33 @@ VALUES ('https://avatars2.githubusercontent.com/u/25778774?s=400&u=9d632b219a820
 
 /* Needs to be seperate because of the User_Created_Check trigger*/
 /*For: Admin Donator */
-INSERT INTO Users (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
+INSERT INTO [Users] (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
 VALUES ('admin@test.com',              'password', '', 'admin',                'test', @admin_role,
-        10.00,                          'Title',       'Software Developer',    GETDATE());
+        10.00,                          'title',       'Software Developer',    GETDATE());
 /*For: Donator */
-INSERT INTO Users (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
+INSERT INTO [Users] (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
 VALUES ('donator@test.com',            'password', '', 'donator',              'test', @donator_role,
         10.00,                           NULL,           NULL,                   NULL);
 /*For: Staff */
-INSERT INTO Users (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
+INSERT INTO [Users] (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
 VALUES ('staff@test.com',              'password', '', 'staff',                'test', @staff_role,
-        NULL,                          'Title',          NULL,                   NULL);
+        NULL,                          'title',          NULL,                   NULL);
 /*For: Engineer */
-INSERT INTO Users (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
+INSERT INTO [Users] (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
 VALUES ('engineer@test.com',           'password', '', 'engineer',             'test', @engineer_role,
-        NULL,                          'Title',        'Water Resources',        NULL);
+        NULL,                          'title',        'Water Resources',        NULL);
 /*For: Admin Donantor */
-INSERT INTO Users (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
+INSERT INTO [Users] (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
 VALUES ('admin_donator@test.com',      'password', '', 'admin_donator',        'test', @admin_donator_role,
         20.00,                         'Database Admin', NULL,                   GETDATE());
 /*For: Engineer Donator */
-INSERT INTO Users (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
+INSERT INTO [Users] (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
 VALUES ('engineer_donator@test.com',   'password', '', 'engineer_donator',     'test', @engineer_donator_role,
-        30.00,                         'Title',          'Transportation',     NULL);
+        30.00,                         'title',          'Transportation',     NULL);
 /*For: Staff Donator */
-INSERT INTO Users (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
+INSERT INTO [Users] (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
 VALUES ('staff_donator@test.com',      'password', '', 'engineer_donator',     'test', @staff_donator_role,
-        40.00,                         'Title',          NULL,                   NULL);
+        40.00,                         'title',          NULL,                   NULL);
 
 INSERT INTO Engineer_Certifications(email, certification)
 VALUES ('engineer@test.com',            'Certified Recycling Systems - Technical Associate'),
@@ -328,7 +346,7 @@ VALUES ('admin@test.com',           'test1@test.com', GETDATE()),
 /***Basic Queries*****/
 SELECT * FROM Project;
 SELECT * FROM Project_Photos;
-SELECT * FROM Users;
+SELECT * FROM [Users];
 SELECT * FROM Donator;
 SELECT * FROM Staff;
 SELECT * FROM Engineer;
@@ -355,7 +373,7 @@ DROP TABLE Admin;
 DROP TABLE Engineer;
 DROP TABLE Donator;
 DROP TABLE Staff;
-DROP TABLE Users;
+DROP TABLE [Users];
 -- DROP TRIGGER User_Updated_Check;
 /*****DROPPING ANYTHING FROM DATABASE ENDS HERE*****/
 

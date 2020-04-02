@@ -7,24 +7,24 @@ namespace BuildTheLanesAPI.Models.Users
         [Required]
         public int id { get; set; }
         [Required]
-        public string Email { get; set; }
+        public string email { get; set; }
         [Required]
         public string Password { get; set; }
         [Required]
-        public string FirstName { get; set; }
+        public string first_name { get; set; }
         [Required]
-        public string LastName { get; set; }
+        public string last_name { get; set; }
         [Required]
         public string Roles { get; set; }
 
 
         /*For: Donator */
-        public string AmountDonated { get; set; }
+        public string amount_donated { get; set; }
         /*For: Staff */
-        public string Title { get; set; }
+        public string title { get; set; }
         /*For: Engineer */
-        public string Type { get; set; }
+        public string type { get; set; }
         /*For: Admin */
-        public string Created { get; set; }
+        public string created { get; set; }
     }
 }

@@ -6,19 +6,19 @@ namespace BuildTheLanesAPI.Entities
     public class User
     {
         public int id { get; set; }
-        public string Email { get; set; }
-        public byte[] PasswordHash { get; set; }
-        public byte[] PasswordSalt { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
+        public string email { get; set; }
+        public byte[] password_hash { get; set; }
+        public byte[] password_salt { get; set; }
+        public string first_name { get; set; }
+        public string last_name { get; set; }
         public string Roles { get; set; }
         /*For: Donator */
-        public string AmountDonated { get; set; }
+        public string amount_donated { get; set; }
         /*For: Staff */
-        public string Title { get; set; }
+        public string title { get; set; }
         /*For: Engineer */
-        public string Type { get; set; }
+        public string type { get; set; }
         /*For: Admin */
-        public string Created { get; set; }
+        public string created { get; set; }
     }
 }
