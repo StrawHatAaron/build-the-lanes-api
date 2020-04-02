@@ -5,7 +5,7 @@ namespace BuildTheLanesAPI.Models.Users
     public class RegisterModel
     {
         [Required]
-        public int Id { get; set; }
+        public int id { get; set; }
         [Required]
         public string Email { get; set; }
         [Required]

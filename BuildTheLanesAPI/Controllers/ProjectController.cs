@@ -44,11 +44,11 @@ namespace BuildTheLanesAPI.Controllers
                         while (dataReader.Read())
                         {
                             Project project = new Project();
-                            project.ProjectNumber = Convert.ToInt32(dataReader["project_num"]);
-                            project.StartDate = Convert.ToString(dataReader["start_date"]);
-                            project.Status = Convert.ToString(dataReader["status"]);
-                            project.City = Convert.ToString(dataReader["city"]);
-                            project.ZipCode = Convert.ToString(dataReader["zip_code"]);
+                            project.project_number = Convert.ToInt32(dataReader["project_num"]);
+                            project.start_date = Convert.ToString(dataReader["start_date"]);
+                            project.status = Convert.ToString(dataReader["status"]);
+                            project.city = Convert.ToString(dataReader["city"]);
+                            project.zip_code = Convert.ToString(dataReader["zip_code"]);
                             projectList.Add(project);
                         }
                     }
@@ -66,9 +66,8 @@ namespace BuildTheLanesAPI.Controllers
         }
 
 
-
-        [HttpGet("{ProjectNumber}")]
         [Authorize(Roles = Roles.User)]
+        [HttpGet("{ProjectNumber}")]
         public IActionResult GetProject(int ProjectNumber)
         {
             Project project = new Project();
@@ -81,11 +80,11 @@ namespace BuildTheLanesAPI.Controllers
                 {
                     while (dataReader.Read())
                     {
-                        project.ProjectNumber = Convert.ToInt32(dataReader["project_num"]);
-                        project.StartDate = Convert.ToString(dataReader["start_date"]);
-                        project.Status = Convert.ToString(dataReader["status"]);
-                        project.City = Convert.ToString(dataReader["city"]);
-                        project.ZipCode = Convert.ToString(dataReader["zip_code"]);
+                        project.project_number = Convert.ToInt32(dataReader["project_num"]);
+                        project.start_date = Convert.ToString(dataReader["start_date"]);
+                        project.status = Convert.ToString(dataReader["status"]);
+                        project.city = Convert.ToString(dataReader["city"]);
+                        project.zip_code = Convert.ToString(dataReader["zip_code"]);
                     }
                 }
                 connection.Close();
@@ -93,17 +92,16 @@ namespace BuildTheLanesAPI.Controllers
             return Ok(project);
         }
 
-        
 
-        [HttpPost]
         [Authorize(Roles = Roles.Admin)]
+        [HttpPost]
         public IActionResult PostProject([FromBody] Project project)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
                 string sql = $"INSERT INTO Project(start_date, status, city, zip_code) " +
-                        $"VALUES ('{project.StartDate}',  '{project.Status}',  '{project.City}', '{project.ZipCode}');";
+                        $"VALUES ('{project.start_date}',  '{project.status}',  '{project.city}', '{project.zip_code}');";
                 SqlCommand command = new SqlCommand(sql, connection);
                 command.ExecuteReader();
                 connection.Close();

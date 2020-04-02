@@ -83,7 +83,7 @@ namespace BuildTheLanesAPI.Services
 
         public void Update(User userParam, string password = null)
         {
-            var user = _context.Users.Find(userParam.Id);
+            var user = _context.Users.Find(userParam.id);
 
             if (user == null)
                 throw new AppException("User not found");

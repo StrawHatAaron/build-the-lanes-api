@@ -49,7 +49,7 @@ namespace BuildTheLanesAPI.Controllers
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, user.Id.ToString()),
+                    new Claim(ClaimTypes.Name, user.id.ToString()),
                     new Claim(ClaimTypes.Role, user.Roles)
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
@@ -61,7 +61,7 @@ namespace BuildTheLanesAPI.Controllers
             // return basic user info and authentication token
             return Ok(new
             {
-                Id = user.Id,
+                id = user.id,
                 Email = user.Email,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
@@ -89,7 +89,7 @@ namespace BuildTheLanesAPI.Controllers
             }
         }
 
-
+        [Authorize(Roles = Roles.AllStaff)]
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -111,7 +111,7 @@ namespace BuildTheLanesAPI.Controllers
         {
             // map model to entity and set id
             var user = _mapper.Map<User>(model);
-            user.Id = id;
+            user.id = id;
 
             try
             {

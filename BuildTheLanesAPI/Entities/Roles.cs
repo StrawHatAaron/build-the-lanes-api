@@ -11,5 +11,6 @@ namespace BuildTheLanesAPI.Entities
         public const string StaffDonator = "ed";
         public const string AdminDonator = "ad";
         public const string EngineerDonator = "ed"; 
+        public const string AllStaff = Staff+","+Admin+","+Engineer+","+StaffDonator+","+AdminDonator+","+EngineerDonator;
     }
 }
