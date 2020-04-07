@@ -208,7 +208,7 @@ BEGIN
        @new_roles != 'ed' AND
        @new_roles != 'ad'
         BEGIN
-            RAISERROR ('The Credit Card you have entered has expired.', 10, 1)
+            THROW 51000, 'The Role entered does not exist', 1;
             ROLLBACK TRANSACTION
         END
 
@@ -225,7 +225,7 @@ BEGIN
        @new_roles = 'ed' OR
        @new_roles = 'ad'
         INSERT INTO Staff(email, password_salt, password_hash, token, f_name, l_name, roles, title, type, created)
-        VALUES (@new_email, @new_password_salt, @new_password_hash,, @new_token, @new_f_name, @new_l_name, @new_roles, @new_title, @new_type, @new_created);
+        VALUES (@new_email, @new_password_salt, @new_password_hash, @new_token, @new_f_name, @new_l_name, @new_roles, @new_title, @new_type, @new_created);
     IF @new_roles = 'e' OR
        @new_roles = 'ed'
         INSERT INTO Engineer(email, password_salt, password_hash, token, f_name, l_name, roles, title, type)
