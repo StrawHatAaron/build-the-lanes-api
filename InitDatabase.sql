@@ -56,7 +56,8 @@ CREATE TABLE [Users](
 /***May be used in with "Users" table to create Named Queries***/
 CREATE TABLE Donator(
 	email VARCHAR(320) NOT NULL,
-	password VARCHAR(64) NOT NULL,
+	password_salt VARCHAR(max) NOT NULL,
+	password_hash VARCHAR(max) NOT NULL,
 	token VARCHAR(320),
 	f_name VARCHAR(64) NOT NULL,
 	l_name VARCHAR(64) NOT NULL,
@@ -70,7 +71,8 @@ CREATE TABLE Donator(
 
 CREATE TABLE Staff(
 	email VARCHAR(320) NOT NULL,
-	password VARCHAR(64) NOT NULL,
+	password_salt VARCHAR(max) NOT NULL,
+	password_hash VARCHAR(max) NOT NULL,
 	token VARCHAR(320),
 	f_name VARCHAR(64) NOT NULL,
 	l_name VARCHAR(64) NOT NULL,
@@ -86,7 +88,8 @@ CREATE TABLE Staff(
 
 CREATE TABlE Admin(
     email VARCHAR(320) NOT NULL,
-	password VARCHAR(64) NOT NULL,
+	password_salt VARCHAR(max) NOT NULL,
+	password_hash VARCHAR(max) NOT NULL,
 	token VARCHAR(320),
 	f_name VARCHAR(64) NOT NULL,
 	l_name VARCHAR(64) NOT NULL,
@@ -101,7 +104,8 @@ CREATE TABlE Admin(
 
 CREATE TABLE Engineer(
     email VARCHAR(320) NOT NULL,
-	password VARCHAR(64) NOT NULL,
+	password_salt VARCHAR(max) NOT NULL,
+	password_hash VARCHAR(max) NOT NULL,
 	token VARCHAR(320),
 	f_name VARCHAR(64) NOT NULL,
 	l_name VARCHAR(64) NOT NULL,
@@ -173,7 +177,8 @@ AS
 BEGIN
     SET NOCOUNT ON
 	DECLARE @new_email VARCHAR(320);
-	DECLARE @new_password VARCHAR(64);
+	DECLARE @new_password_salt VARCHAR(max);
+    DECLARE @new_password_hash VARCHAR(max);
 	DECLARE @new_token VARCHAR(320);
 	DECLARE @new_f_name VARCHAR(64);
 	DECLARE @new_l_name VARCHAR(64);
@@ -184,7 +189,8 @@ BEGIN
 	DECLARE @new_created DATETIME;
 
     SET @new_email = (SELECT email FROM Inserted);
-	SET @new_password = (SELECT password FROM Inserted);
+	SET @new_password_salt = (SELECT password_salt FROM Inserted);
+    SET @new_password_hash = (SELECT password_hash FROM Inserted);
 	SET @new_token = (SELECT token FROM Inserted);
 	SET @new_f_name = (SELECT f_name FROM Inserted);
 	SET @new_l_name = (SELECT l_name FROM Inserted);
@@ -202,7 +208,7 @@ BEGIN
        @new_roles != 'ed' AND
        @new_roles != 'ad'
         BEGIN
-            THROW 51000, 'The Role entered does not exist', 1;
+            RAISERROR ('The Credit Card you have entered has expired.', 10, 1)
             ROLLBACK TRANSACTION
         END
 
@@ -210,25 +216,24 @@ BEGIN
        @new_roles = 'sd' OR
        @new_roles = 'ed' OR
        @new_roles = 'ad'
-            INSERT INTO Donator(email, password, token, f_name, l_name, roles, amount_donated)
-        VALUES (@new_email, @new_password, @new_token, @new_f_name, @new_l_name, @new_roles, @new_amount_donated);
+            INSERT INTO Donator(email, password_salt, password_hash, token, f_name, l_name, roles, amount_donated)
+        VALUES (@new_email, @new_password_salt, @new_password_hash, @new_token, @new_f_name, @new_l_name, @new_roles, @new_amount_donated);
     IF @new_roles = 's' OR
        @new_roles = 'sd' OR
        @new_roles = 'e' OR
        @new_roles = 'a' OR
        @new_roles = 'ed' OR
        @new_roles = 'ad'
-        INSERT INTO Staff(email, password, token, f_name, l_name, roles, title, type, created)
-        VALUES (@new_email, @new_password, @new_token, @new_f_name, @new_l_name, @new_roles, @new_title, @new_type, @new_created);
+        INSERT INTO Staff(email, password_salt, password_hash, token, f_name, l_name, roles, title, type, created)
+        VALUES (@new_email, @new_password_salt, @new_password_hash,, @new_token, @new_f_name, @new_l_name, @new_roles, @new_title, @new_type, @new_created);
     IF @new_roles = 'e' OR
        @new_roles = 'ed'
-        INSERT INTO Engineer(email, password, token, f_name, l_name, roles, title, type)
-        VALUES (@new_email, @new_password, @new_token, @new_f_name, @new_l_name, @new_roles, @new_title, @new_type)
+        INSERT INTO Engineer(email, password_salt, password_hash, token, f_name, l_name, roles, title, type)
+        VALUES (@new_email, @new_password_salt, @new_password_hash, @new_token, @new_f_name, @new_l_name, @new_roles, @new_title, @new_type)
     IF @new_roles = 'a' OR
        @new_roles = 'ad'
-        INSERT INTO Admin(email, password, token, f_name, l_name, roles, title, created)
-        VALUES (@new_email, @new_password, @new_token, @new_f_name, @new_l_name, @new_roles, @new_title, @new_created)
-
+        INSERT INTO Admin(email, password_salt, password_hash, token, f_name, l_name, roles, title, created)
+        VALUES (@new_email, @new_password_salt, @new_password_hash, @new_token, @new_f_name, @new_l_name, @new_roles, @new_title, @new_created)
 END
 
 
@@ -285,32 +290,32 @@ VALUES ('https://avatars2.githubusercontent.com/u/25778774?s=400&u=9d632b219a820
 
 /* Needs to be seperate because of the User_Created_Check trigger*/
 /*For: Admin Donator */
-INSERT INTO [Users] (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
-VALUES ('admin@test.com',              'password', '', 'admin',                'test', @admin_role,
+INSERT INTO [Users] (email, password_salt, password_hash, token, f_name, l_name, roles, amount_donated, title,  type, created)
+VALUES ('admin@test.com',              'password_salt', 'password_hash', '', 'admin',                'test', @admin_role,
         10.00,                          'title',       'Software Developer',    GETDATE());
 /*For: Donator */
-INSERT INTO [Users] (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
-VALUES ('donator@test.com',            'password', '', 'donator',              'test', @donator_role,
+INSERT INTO [Users] (email, password_salt, password_hash, token, f_name, l_name, roles, amount_donated, title,  type, created)
+VALUES ('donator@test.com',            'password_salt', 'password_hash', '', 'donator',              'test', @donator_role,
         10.00,                           NULL,           NULL,                   NULL);
 /*For: Staff */
-INSERT INTO [Users] (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
-VALUES ('staff@test.com',              'password', '', 'staff',                'test', @staff_role,
+INSERT INTO [Users] (email, password_salt, password_hash, token, f_name, l_name, roles, amount_donated, title,  type, created)
+VALUES ('staff@test.com',              'password_salt', 'password_hash', '', 'staff',                'test', @staff_role,
         NULL,                          'title',          NULL,                   NULL);
 /*For: Engineer */
-INSERT INTO [Users] (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
-VALUES ('engineer@test.com',           'password', '', 'engineer',             'test', @engineer_role,
+INSERT INTO [Users] (email, password_salt, password_hash, token, f_name, l_name, roles, amount_donated, title,  type, created)
+VALUES ('engineer@test.com',           'password_salt', 'password_hash', '', 'engineer',             'test', @engineer_role,
         NULL,                          'title',        'Water Resources',        NULL);
 /*For: Admin Donantor */
-INSERT INTO [Users] (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
-VALUES ('admin_donator@test.com',      'password', '', 'admin_donator',        'test', @admin_donator_role,
+INSERT INTO [Users] (email, password_salt, password_hash, token, f_name, l_name, roles, amount_donated, title,  type, created)
+VALUES ('admin_donator@test.com',      'password_salt', 'password_hash', '', 'admin_donator',        'test', @admin_donator_role,
         20.00,                         'Database Admin', NULL,                   GETDATE());
 /*For: Engineer Donator */
-INSERT INTO [Users] (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
-VALUES ('engineer_donator@test.com',   'password', '', 'engineer_donator',     'test', @engineer_donator_role,
+INSERT INTO [Users] (email, password_salt, password_hash, token, f_name, l_name, roles, amount_donated, title,  type, created)
+VALUES ('engineer_donator@test.com',   'password_salt', 'password_hash', '', 'engineer_donator',     'test', @engineer_donator_role,
         30.00,                         'title',          'Transportation',     NULL);
 /*For: Staff Donator */
-INSERT INTO [Users] (email, password, token, f_name, l_name, roles, amount_donated, title,  type, created)
-VALUES ('staff_donator@test.com',      'password', '', 'engineer_donator',     'test', @staff_donator_role,
+INSERT INTO [Users] (email, password_salt, password_hash, token, f_name, l_name, roles, amount_donated, title,  type, created)
+VALUES ('staff_donator@test.com',      'password_salt', 'password_hash', '', 'engineer_donator',     'test', @staff_donator_role,
         40.00,                         'title',          NULL,                   NULL);
 
 INSERT INTO Engineer_Certifications(email, certification)
@@ -374,6 +379,7 @@ DROP TABLE Engineer;
 DROP TABLE Donator;
 DROP TABLE Staff;
 DROP TABLE [Users];
+DROP TABLE _EFMigrationsHistory;
 -- DROP TRIGGER User_Updated_Check;
 /*****DROPPING ANYTHING FROM DATABASE ENDS HERE*****/
 

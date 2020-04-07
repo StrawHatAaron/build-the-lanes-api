@@ -1,5 +1,4 @@
-﻿using System;
-namespace BuildTheLanesAPI.Entities
+﻿namespace BuildTheLanesAPI.Entities
 {
 
     /*in the database "User" is "Users" because sql server already has a table called User for SQL developers*/
@@ -11,7 +10,7 @@ namespace BuildTheLanesAPI.Entities
         public byte[] password_salt { get; set; }
         public string first_name { get; set; }
         public string last_name { get; set; }
-        public string Roles { get; set; }
+        public string roles { get; set; }
         /*For: Donator */
         public string amount_donated { get; set; }
         /*For: Staff */

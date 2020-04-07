@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using BuildTheLanesAPI.Entities;
+using BuildTheLanesAPI.Models;
 
 namespace BuildTheLanesAPI.Helpers
 {
@@ -21,5 +22,7 @@ namespace BuildTheLanesAPI.Helpers
         }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Project> Projects{ get; set; }
+        
     }
 }

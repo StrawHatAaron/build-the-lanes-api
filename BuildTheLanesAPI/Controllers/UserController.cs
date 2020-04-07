@@ -50,7 +50,7 @@ namespace BuildTheLanesAPI.Controllers
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.Name, user.id.ToString()),
-                    new Claim(ClaimTypes.Role, user.Roles)
+                    new Claim(ClaimTypes.Role, user.roles)
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -91,20 +91,25 @@ namespace BuildTheLanesAPI.Controllers
 
         [Authorize(Roles = Roles.AllStaff)]
         [HttpGet]
-        public IActionResult GetAll()
+        public IActionResult GetAllUser()
         {
             var users = _userService.GetAll();
-            var model = _mapper.Map<IList<UserModel>>(users);
+            var model = _mapper.Map<IList<RegisterModel>>(users);
             return Ok(model);
         }
+
+        [Authorize(Roles = Roles.Admin)]
+
 
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
             var user = _userService.GetById(id);
-            var model = _mapper.Map<UserModel>(user);
+            var model = _mapper.Map<RegisterModel>(user);
             return Ok(model);
         }
+
+        
 
         [HttpPut("{id}")]
         public IActionResult Update(int id, [FromBody]UpdateModel model)
