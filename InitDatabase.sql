@@ -34,6 +34,7 @@ CREATE TABLE Project_Photos(
 
 /*****ROLE BASED AUTH PROFILES SECTION STARTS HERE*****/
 CREATE TABLE [Users](
+    id INT NOT NULL IDENTITY,
 	email VARCHAR(320) NOT NULL,
 	password_salt VARCHAR(max) NOT NULL,
 	password_hash VARCHAR(max) NOT NULL,
@@ -55,6 +56,7 @@ CREATE TABLE [Users](
 /***Role Based Sub-Class Tables***/
 /***May be used in with "Users" table to create Named Queries***/
 CREATE TABLE Donator(
+    id INT NOT NULL IDENTITY,
 	email VARCHAR(320) NOT NULL,
 	password_salt VARCHAR(max) NOT NULL,
 	password_hash VARCHAR(max) NOT NULL,
@@ -70,6 +72,7 @@ CREATE TABLE Donator(
 );
 
 CREATE TABLE Staff(
+    id INT NOT NULL IDENTITY,
 	email VARCHAR(320) NOT NULL,
 	password_salt VARCHAR(max) NOT NULL,
 	password_hash VARCHAR(max) NOT NULL,
@@ -87,6 +90,7 @@ CREATE TABLE Staff(
 );
 
 CREATE TABlE Admin(
+    id INT NOT NULL IDENTITY,
     email VARCHAR(320) NOT NULL,
 	password_salt VARCHAR(max) NOT NULL,
 	password_hash VARCHAR(max) NOT NULL,
@@ -103,6 +107,7 @@ CREATE TABlE Admin(
 );
 
 CREATE TABLE Engineer(
+    id INT NOT NULL IDENTITY,
     email VARCHAR(320) NOT NULL,
 	password_salt VARCHAR(max) NOT NULL,
 	password_hash VARCHAR(max) NOT NULL,
@@ -217,7 +222,7 @@ BEGIN
        @new_roles = 'ed' OR
        @new_roles = 'ad'
             INSERT INTO Donator(email, password_salt, password_hash, token, f_name, l_name, roles, amount_donated)
-        VALUES (@new_email, @new_password_salt, @new_password_hash, @new_token, @new_f_name, @new_l_name, @new_roles, @new_amount_donated);
+            VALUES (@new_email, @new_password_salt, @new_password_hash, @new_token, @new_f_name, @new_l_name, @new_roles, @new_amount_donated);
     IF @new_roles = 's' OR
        @new_roles = 'sd' OR
        @new_roles = 'e' OR
