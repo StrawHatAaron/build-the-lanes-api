@@ -27,7 +27,7 @@ namespace BuildTheLanesAPI.Controllers
         }
 
 
-        [Authorize(Roles = Roles.Admin)]
+        [Authorize(Roles = Roles.AllStaff)]
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -37,7 +37,7 @@ namespace BuildTheLanesAPI.Controllers
                 connection.Open();
                 try
                 {
-                    string sql = "SELECT * FROM Project";
+                    string sql = "SELECT * FROM Projects";
                     SqlCommand command = new SqlCommand(sql, connection);
                     using (SqlDataReader dataReader = command.ExecuteReader())
                     {
@@ -74,7 +74,7 @@ namespace BuildTheLanesAPI.Controllers
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
-                string sql = $"SELECT * FROM Project WHERE project_num={ProjectNumber}";
+                string sql = $"SELECT * FROM Projects WHERE project_num={ProjectNumber}";
                 SqlCommand command = new SqlCommand(sql, connection);
                 using (SqlDataReader dataReader = command.ExecuteReader())
                 {
@@ -93,14 +93,14 @@ namespace BuildTheLanesAPI.Controllers
         }
 
 
-        [Authorize(Roles = Roles.Admin)]
+        [Authorize(Roles = Roles.AllAdmin)]
         [HttpPost]
         public IActionResult PostProject([FromBody] Project project)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
-                string sql = $"INSERT INTO Project(start_date, status, city, zip_code) " +
+                string sql = $"INSERT INTO Projects(start_date, status, city, zip_code) " +
                         $"VALUES ('{project.start_date}',  '{project.status}',  '{project.city}', '{project.zip_code}');";
                 SqlCommand command = new SqlCommand(sql, connection);
                 command.ExecuteReader();
@@ -115,7 +115,7 @@ namespace BuildTheLanesAPI.Controllers
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"DELETE FROM Project WHERE project_num='{project_num}'";
+                string sql = $"DELETE FROM Projects WHERE project_num='{project_num}'";
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     connection.Open();

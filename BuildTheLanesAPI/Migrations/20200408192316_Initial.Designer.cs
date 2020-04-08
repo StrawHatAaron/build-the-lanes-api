@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BuildTheLanesAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200408112116_Initial")]
+    [Migration("20200408192316_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -238,10 +238,8 @@ namespace BuildTheLanesAPI.Migrations
 
             modelBuilder.Entity("BuildTheLanesAPI.Entities.User", b =>
                 {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("email")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("amount_donated")
                         .HasColumnType("nvarchar(max)");
@@ -249,11 +247,11 @@ namespace BuildTheLanesAPI.Migrations
                     b.Property<string>("created")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("email")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("f_name")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("id")
+                        .HasColumnType("int");
 
                     b.Property<string>("l_name")
                         .HasColumnType("nvarchar(max)");
@@ -273,7 +271,7 @@ namespace BuildTheLanesAPI.Migrations
                     b.Property<string>("type")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("id");
+                    b.HasKey("email");
 
                     b.ToTable("Users");
                 });

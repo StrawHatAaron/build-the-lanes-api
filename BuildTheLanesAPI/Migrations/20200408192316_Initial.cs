@@ -146,9 +146,8 @@ namespace BuildTheLanesAPI.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    email = table.Column<string>(nullable: true),
+                    email = table.Column<string>(nullable: false),
+                    id = table.Column<int>(nullable: false),
                     password_hash = table.Column<byte[]>(nullable: true),
                     password_salt = table.Column<byte[]>(nullable: true),
                     f_name = table.Column<string>(nullable: true),
@@ -161,7 +160,7 @@ namespace BuildTheLanesAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.id);
+                    table.PrimaryKey("PK_Users", x => x.email);
                 });
         }
 

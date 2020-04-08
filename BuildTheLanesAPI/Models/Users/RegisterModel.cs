@@ -9,7 +9,7 @@ namespace BuildTheLanesAPI.Models.Users
         [Required]
         public string email { get; set; }
         [Required]
-        public string Password { get; set; }
+        public string password { get; set; }
         [Required]
         public string f_name { get; set; }
         [Required]

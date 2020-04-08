@@ -38,6 +38,22 @@ CREATE TABLE [Donators] (
 
 GO
 
+CREATE TABLE [EngineerCertifications] (
+    [email] nvarchar(450) NOT NULL,
+    [certification] nvarchar(max) NULL,
+    CONSTRAINT [PK_EngineerCertifications] PRIMARY KEY ([email])
+);
+
+GO
+
+CREATE TABLE [EngineerDegrees] (
+    [email] nvarchar(450) NOT NULL,
+    [degrees] nvarchar(max) NULL,
+    CONSTRAINT [PK_EngineerDegrees] PRIMARY KEY ([email])
+);
+
+GO
+
 CREATE TABLE [Engineers] (
     [id] int NOT NULL IDENTITY,
     [email] nvarchar(max) NULL,
@@ -65,6 +81,15 @@ CREATE TABLE [Projects] (
 
 GO
 
+CREATE TABLE [Responsibilities] (
+    [number] int NOT NULL IDENTITY,
+    [staff_email] nvarchar(max) NULL,
+    [project_num] int NOT NULL,
+    CONSTRAINT [PK_Responsibilities] PRIMARY KEY ([number])
+);
+
+GO
+
 CREATE TABLE [Staffs] (
     [id] int NOT NULL IDENTITY,
     [email] nvarchar(max) NULL,
@@ -82,8 +107,8 @@ CREATE TABLE [Staffs] (
 GO
 
 CREATE TABLE [Users] (
-    [id] int NOT NULL IDENTITY,
-    [email] nvarchar(max) NULL,
+    [email] nvarchar(450) NOT NULL,
+    [id] int NOT NULL,
     [password_hash] varbinary(max) NULL,
     [password_salt] varbinary(max) NULL,
     [f_name] nvarchar(max) NULL,
@@ -93,13 +118,13 @@ CREATE TABLE [Users] (
     [title] nvarchar(max) NULL,
     [type] nvarchar(max) NULL,
     [created] nvarchar(max) NULL,
-    CONSTRAINT [PK_Users] PRIMARY KEY ([id])
+    CONSTRAINT [PK_Users] PRIMARY KEY ([email])
 );
 
 GO
 
 INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-VALUES (N'20200408094834_Initial', N'3.1.2');
+VALUES (N'20200408192316_Initial', N'3.1.2');
 
 GO
 

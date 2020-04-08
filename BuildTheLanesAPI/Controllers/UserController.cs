@@ -38,7 +38,7 @@ namespace BuildTheLanesAPI.Controllers
         [HttpPost("authenticate")]
         public IActionResult Authenticate([FromBody]AuthenticateModel model)
         {
-            var user = _userService.Authenticate(model.email, model.Password);
+            var user = _userService.Authenticate(model.email, model.password);
 
             if (user == null)
                 return BadRequest(new { message = "email or password is incorrect" });
@@ -61,10 +61,10 @@ namespace BuildTheLanesAPI.Controllers
             // return basic user info and authentication token
             return Ok(new
             {
-                id = user.id,
-                email = user.email,
-                f_name = user.f_name,
-                l_name = user.l_name,
+                Id = user.id,
+                Email = user.email,
+                F_name = user.f_name,
+                L_name = user.l_name,
                 token = tokenString
             });
         }
@@ -79,7 +79,7 @@ namespace BuildTheLanesAPI.Controllers
             try
             {
                 // create user
-                _userService.Create(user, model.Password);
+                _userService.Create(user, model.password);
                 return Ok();
             }
             catch (AppException ex)
@@ -121,7 +121,7 @@ namespace BuildTheLanesAPI.Controllers
             try
             {
                 // update user 
-                _userService.Update(user, model.Password);
+                _userService.Update(user, model.password);
                 return Ok();
             }
             catch (AppException ex)
