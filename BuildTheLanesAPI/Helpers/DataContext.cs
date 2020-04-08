@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using BuildTheLanesAPI.Entities;
-using BuildTheLanesAPI.Models;
 
 namespace BuildTheLanesAPI.Helpers
 {
@@ -21,8 +20,18 @@ namespace BuildTheLanesAPI.Helpers
             options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
         }
 
-        public DbSet<User> Users { get; set; }
-        public DbSet<Project> Projects{ get; set; }
+
+        //NOTE: The names given to these lists below are going to be the names of the tables
+        //      that Entity Framework will look for inside the database
+
+        //all user types
+        public DbSet<User> Users {get; set;}
+        public DbSet<Donator> Donators {get; set;}
+        public DbSet<Staff> Staffs {get; set;}
+        public DbSet<Engineer> Engineers {get; set;}
+        public DbSet<Admin> Admins {get; set;}
         
+        //all other objects
+        public DbSet<Project> Projects{get; set;}
     }
 }

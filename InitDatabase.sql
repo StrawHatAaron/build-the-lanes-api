@@ -13,25 +13,6 @@ Password: [Ask an Author]
 
 
 /**********TABLE CREATION STARTS HERE**********/
-CREATE TABLE Project(
-    project_num INTEGER NOT NULL IDENTITY, /*IDENTITY AUTO INCREMENTS*/
-    start_date DATE NOT NULL,
-    status VARCHAR(16) NOT NULL,
-    city VARCHAR(45) NOT NULL,
-    zip_code CHAR(5) NOT NULL,
-    PRIMARY KEY (project_num)
-);
-
-CREATE TABLE Project_Photos(
-    data_link VARCHAR(1024) NOT NULL,
-    project_num INTEGER NOT NULL,
-    photo_name VARCHAR(64) NOT NULL,
-    PRIMARY KEY (data_link, project_num),
-    FOREIGN KEY (project_num) REFERENCES Project(project_num)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
-);
-
 /*****ROLE BASED AUTH PROFILES SECTION STARTS HERE*****/
 CREATE TABLE [Users](
     id INT NOT NULL IDENTITY,
@@ -55,7 +36,7 @@ CREATE TABLE [Users](
 );
 /***Role Based Sub-Class Tables***/
 /***May be used in with "Users" table to create Named Queries***/
-CREATE TABLE Donator(
+CREATE TABLE Donators(
     id INT NOT NULL IDENTITY,
 	email VARCHAR(320) NOT NULL,
 	password_salt VARCHAR(max) NOT NULL,
@@ -71,7 +52,7 @@ CREATE TABLE Donator(
 		ON UPDATE CASCADE
 );
 
-CREATE TABLE Staff(
+CREATE TABLE Staffs(
     id INT NOT NULL IDENTITY,
 	email VARCHAR(320) NOT NULL,
 	password_salt VARCHAR(max) NOT NULL,
@@ -89,7 +70,7 @@ CREATE TABLE Staff(
 		ON UPDATE CASCADE
 );
 
-CREATE TABlE Admin(
+CREATE TABlE Admins(
     id INT NOT NULL IDENTITY,
     email VARCHAR(320) NOT NULL,
 	password_salt VARCHAR(max) NOT NULL,
@@ -101,12 +82,12 @@ CREATE TABlE Admin(
 	title VARCHAR(128) NOT NULL,
 	created DATETIME NOT NULL,
     PRIMARY KEY (email),
-	FOREIGN KEY (email) REFERENCES Staff(email)
+	FOREIGN KEY (email) REFERENCES Staffs(email)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
 );
 
-CREATE TABLE Engineer(
+CREATE TABLE Engineers(
     id INT NOT NULL IDENTITY,
     email VARCHAR(320) NOT NULL,
 	password_salt VARCHAR(max) NOT NULL,
@@ -118,52 +99,46 @@ CREATE TABLE Engineer(
 	title VARCHAR(128) NOT NULL,
 	type VARCHAR(256) NOT NULL,
     PRIMARY KEY (email),
-	FOREIGN KEY (email) REFERENCES Staff(email)
+	FOREIGN KEY (email) REFERENCES Staffs(email)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
 );
 /***Engineer: Certification and Degree Data***/
 /***Note: these aren't profiles. Just a tables for Engineer(s) with
           Multiple degrees/certifications. ***/
-CREATE TABLE Engineer_Certifications(
+CREATE TABLE EngineerCertifications(
     email VARCHAR(320) NOT NULL,
     certification VARCHAR(256),
     PRIMARY KEY (email, certification),
-    FOREIGN KEY (email) REFERENCES Engineer(email)
+    FOREIGN KEY (email) REFERENCES Engineers(email)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
 );
 
-CREATE TABLE Engineer_Degrees(
+CREATE TABLE EngineerDegrees(
     email VARCHAR(320) NOT NULL,
     degree VARCHAR(256),
     PRIMARY KEY (email, degree),
-    FOREIGN KEY (email) REFERENCES Engineer(email)
+    FOREIGN KEY (email) REFERENCES Engineers(email)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
 );
-/***Admin: Audited Actions***/
-/***Note: these aren't profiles. Just actions that may be audited***/
-CREATE TABLE Admin_Added_User(
-    admin_email VARCHAR(320) NOT NULL,
-    user_email  VARCHAR(320) NOT NULL,
-    timestamp DATETIME,
-    PRIMARY KEY (admin_email, user_email),
-	FOREIGN KEY (admin_email) REFERENCES Admin(email)
-		ON DELETE CASCADE
-		ON UPDATE CASCADE,
+/*****ROLE BASED AUTH PROFILES SECTION ENDS HERE*****/
+
+CREATE TABLE Projects(
+    project_num INTEGER NOT NULL IDENTITY, /*IDENTITY AUTO INCREMENTS*/
+    start_date DATE NOT NULL,
+    status VARCHAR(16) NOT NULL,
+    city VARCHAR(45) NOT NULL,
+    zip_code CHAR(5) NOT NULL,
+    PRIMARY KEY (project_num)
 );
 
-CREATE TABLE Admin_Deleted_User(
-    admin_email VARCHAR(320) NOT NULL,
-    user_email  VARCHAR(320) NOT NULL,
-    timestamp DATETIME,
-    PRIMARY KEY (admin_email, user_email),
-	FOREIGN KEY (admin_email) REFERENCES Admin(email)
-		ON DELETE CASCADE
-		ON UPDATE CASCADE,
-);
-/*****ROLE BASED AUTH PROFILES SECTION ENDS HERE*****/
+CREATE TABLE Responsibilities(
+    staff_email VARCHAR(320) FOREIGN KEY REFERENCES Staffs(email),
+    project_num INT FOREIGN KEY REFERENCES Projects(project_num),
+    PRIMARY KEY (staff_email, project_num)
+)
 /**********TABLE CREATION ENDS HERE**********/
 
 
@@ -221,7 +196,7 @@ BEGIN
        @new_roles = 'sd' OR
        @new_roles = 'ed' OR
        @new_roles = 'ad'
-            INSERT INTO Donator(email, password_salt, password_hash, token, f_name, l_name, roles, amount_donated)
+            INSERT INTO Donators(email, password_salt, password_hash, token, f_name, l_name, roles, amount_donated)
             VALUES (@new_email, @new_password_salt, @new_password_hash, @new_token, @new_f_name, @new_l_name, @new_roles, @new_amount_donated);
     IF @new_roles = 's' OR
        @new_roles = 'sd' OR
@@ -229,15 +204,15 @@ BEGIN
        @new_roles = 'a' OR
        @new_roles = 'ed' OR
        @new_roles = 'ad'
-        INSERT INTO Staff(email, password_salt, password_hash, token, f_name, l_name, roles, title, type, created)
+        INSERT INTO Staffs(email, password_salt, password_hash, token, f_name, l_name, roles, title, type, created)
         VALUES (@new_email, @new_password_salt, @new_password_hash, @new_token, @new_f_name, @new_l_name, @new_roles, @new_title, @new_type, @new_created);
     IF @new_roles = 'e' OR
        @new_roles = 'ed'
-        INSERT INTO Engineer(email, password_salt, password_hash, token, f_name, l_name, roles, title, type)
+        INSERT INTO Engineers(email, password_salt, password_hash, token, f_name, l_name, roles, title, type)
         VALUES (@new_email, @new_password_salt, @new_password_hash, @new_token, @new_f_name, @new_l_name, @new_roles, @new_title, @new_type)
     IF @new_roles = 'a' OR
        @new_roles = 'ad'
-        INSERT INTO Admin(email, password_salt, password_hash, token, f_name, l_name, roles, title, created)
+        INSERT INTO Admins(email, password_salt, password_hash, token, f_name, l_name, roles, title, created)
         VALUES (@new_email, @new_password_salt, @new_password_hash, @new_token, @new_f_name, @new_l_name, @new_roles, @new_title, @new_created)
 END
 
@@ -276,7 +251,7 @@ SET @staff_donator_role = 'sd'
 SET @engineer_donator_role = 'ed'
 SET @admin_donator_role = 'ad'
 
-INSERT INTO Project (start_date, status, city, zip_code)
+INSERT INTO Projects (start_date, status, city, zip_code)
 VALUES  ('04-09-2001',  'NEW',          'Vacaville',    '95688'),
         ('2001-03-09',	'NEW',	        'Rocklin',	    '95765'),
         ('2020-03-09',	'ESCALATED',	'Vacaville',	'95688'),
@@ -285,13 +260,6 @@ VALUES  ('04-09-2001',  'NEW',          'Vacaville',    '95688'),
         ('2018-04-03',	'Stage 2',	    'Worthington',	'42125'),
         ('2018-04-03',	'Stage 2',	    'Worthington',	'42125');
 
-INSERT INTO Project_Photos(data_link, project_num, photo_name)
-VALUES ('https://avatars2.githubusercontent.com/u/25778774?s=400&u=9d632b219a820cc7c56f1345ca20cabe34788f89&v=4',
-        1, 'Photo 1'),
-       ('https://avatars2.githubusercontent.com/u/37526270?s=400&v=4',
-        2, 'Photo 2'),
-       ('https://avatars3.githubusercontent.com/u/44451183?s=400&v=4',
-        3, 'Photo 3');
 
 /* Needs to be seperate because of the User_Created_Check trigger*/
 /*For: Admin Donator */
@@ -323,29 +291,24 @@ INSERT INTO [Users] (email, password_salt, password_hash, token, f_name, l_name,
 VALUES ('staff_donator@test.com',      'password_salt', 'password_hash', '', 'engineer_donator',     'test', @staff_donator_role,
         40.00,                         'title',          NULL,                   NULL);
 
-INSERT INTO Engineer_Certifications(email, certification)
+INSERT INTO EngineerCertifications(email, certification)
 VALUES ('engineer@test.com',            'Certified Recycling Systems - Technical Associate'),
        ('engineer@test.com',            'Diplomate, Geotechnical Engineering'),
        ('engineer_donator@test.com',    'Certified Planning Engineer'),
        ('engineer_donator@test.com',    'Certified Healthcare Constructor');
 
-INSERT INTO Engineer_Degrees(email, degree)
+INSERT INTO EngineerDegrees(email, degree)
 VALUES ('engineer@test.com',            'BS in Civil Engineering'),
        ('engineer@test.com',            'MS in Transportation Engineering'),
        ('engineer_donator@test.com',    'BS in Civil Engineering'),
        ('engineer_donator@test.com',    'MS in Water Resources Engineering');
 
-INSERT INTO Admin_Added_User(admin_email, user_email, timestamp)
-VALUES ('admin@test.com',           'test1@test.com', GETDATE()),
-       ('admin@test.com',           'test2@test.com', GETDATE()),
-       ('admin_donator@test.com',   'test3@test.com', GETDATE()),
-       ('admin_donator@test.com',   'test4@test.com', GETDATE());
+INSERT INTO Responsibilities(staff_email, project_num)
+VALUES ('engineer@test.com',         1),
+       ('engineer@test.com',         2),
+       ('engineer_donator@test.com', 2),
+       ('engineer_donator@test.com', 3);
 
-INSERT INTO Admin_Deleted_User(admin_email, user_email, timestamp)
-VALUES ('admin@test.com',           'test1@test.com', GETDATE()),
-       ('admin@test.com',           'test2@test.com', GETDATE()),
-       ('admin_donator@test.com',   'test3@test.com', GETDATE()),
-       ('admin_donator@test.com',   'test4@test.com', GETDATE());
 /*****INSERTION TEST DATA ENDS HERE*****/
 /**********DATA INSERTION ENDS HERE**********/
 
@@ -354,17 +317,15 @@ VALUES ('admin@test.com',           'test1@test.com', GETDATE()),
 
 /**********QUERIES STARTS HERE**********/
 /***Basic Queries*****/
-SELECT * FROM Project;
-SELECT * FROM Project_Photos;
+SELECT * FROM Projects;
 SELECT * FROM [Users];
-SELECT * FROM Donator;
-SELECT * FROM Staff;
-SELECT * FROM Engineer;
-SELECT * FROM Admin;
-SELECT * FROM Engineer_Certifications;
-SELECT * FROM Engineer_Degrees;
-SELECT * FROM Admin_Added_User;
-SELECT * FROM Admin_Deleted_User;
+SELECT * FROM Donators;
+SELECT * FROM Staffs;
+SELECT * FROM Engineers;
+SELECT * FROM Admins
+SELECT * FROM EngineerCertifications;
+SELECT * FROM EngineerDegrees;
+SELECT * FROM Responsibilities;
 /***Join Queries*****/
 
 /********Named Queries**********/
@@ -373,16 +334,14 @@ SELECT * FROM Admin_Deleted_User;
 
 
 /**********DROPPING ANYTHING FROM DATABASE STARTS HERE**********/
-DROP TABLE Project_Photos;
-DROP TABLE Project;
-DROP TABLE Engineer_Certifications;
-DROP TABLE Engineer_Degrees;
-DROP TABLE Admin_Added_User;
-DROP TABLE Admin_Deleted_User;
-DROP TABLE Admin;
-DROP TABLE Engineer;
-DROP TABLE Donator;
-DROP TABLE Staff;
+DROP TABLE Responsibilities;
+DROP TABLE Projects;
+DROP TABLE EngineerCertifications;
+DROP TABLE EngineerDegrees;
+DROP TABLE Admins;
+DROP TABLE Engineers;
+DROP TABLE Donators;
+DROP TABLE Staffs;
 DROP TABLE [Users];
 DROP TABLE _EFMigrationsHistory;
 -- DROP TRIGGER User_Updated_Check;
