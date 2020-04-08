@@ -11,9 +11,9 @@ namespace BuildTheLanesAPI.Models.Users
         [Required]
         public string Password { get; set; }
         [Required]
-        public string first_name { get; set; }
+        public string f_name { get; set; }
         [Required]
-        public string last_name { get; set; }
+        public string l_name { get; set; }
         [Required]
         public string Roles { get; set; }
 

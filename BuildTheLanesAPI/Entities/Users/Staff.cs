@@ -6,8 +6,8 @@ namespace BuildTheLanesAPI.Entities
         public string email { get; set; }
         public byte[] password_hash { get; set; }
         public byte[] password_salt { get; set; }
-        public string first_name { get; set; }
-        public string last_name { get; set; }
+        public string f_name { get; set; }
+        public string l_name { get; set; }
         public string roles { get; set; }
         /*For: Staff */
         public string title { get; set; }

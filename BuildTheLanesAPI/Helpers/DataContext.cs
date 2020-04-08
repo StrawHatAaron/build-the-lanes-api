@@ -32,6 +32,9 @@ namespace BuildTheLanesAPI.Helpers
         public DbSet<Admin> Admins {get; set;}
         
         //all other objects
+        public DbSet<EngineerCertification> EngineerCertifications {get; set;}
+        public DbSet<EngineerDegree> EngineerDegrees {get; set;}
         public DbSet<Project> Projects{get; set;}
+        public DbSet<Responsibility> Responsibilities {get; set;}
     }
 }

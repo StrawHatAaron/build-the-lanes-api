@@ -99,11 +99,11 @@ namespace BuildTheLanesAPI.Services
             }
 
             // update user properties if provided
-            if (!string.IsNullOrWhiteSpace(userParam.first_name))
-                user.first_name = userParam.first_name;
+            if (!string.IsNullOrWhiteSpace(userParam.f_name))
+                user.f_name = userParam.f_name;
 
-            if (!string.IsNullOrWhiteSpace(userParam.last_name))
-                user.last_name = userParam.last_name;
+            if (!string.IsNullOrWhiteSpace(userParam.l_name))
+                user.l_name = userParam.l_name;
 
             // update password if provided
             if (!string.IsNullOrWhiteSpace(password))

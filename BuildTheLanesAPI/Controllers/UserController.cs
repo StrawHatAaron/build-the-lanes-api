@@ -63,8 +63,8 @@ namespace BuildTheLanesAPI.Controllers
             {
                 id = user.id,
                 email = user.email,
-                first_name = user.first_name,
-                last_name = user.last_name,
+                f_name = user.f_name,
+                l_name = user.l_name,
                 token = tokenString
             });
         }

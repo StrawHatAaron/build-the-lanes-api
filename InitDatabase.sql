@@ -135,6 +135,7 @@ CREATE TABLE Projects(
 );
 
 CREATE TABLE Responsibilities(
+    number INTEGER NOT NULL IDENTITY,
     staff_email VARCHAR(320) FOREIGN KEY REFERENCES Staffs(email),
     project_num INT FOREIGN KEY REFERENCES Projects(project_num),
     PRIMARY KEY (staff_email, project_num)
