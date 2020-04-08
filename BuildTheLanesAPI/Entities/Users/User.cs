@@ -1,10 +1,13 @@
-﻿namespace BuildTheLanesAPI.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace BuildTheLanesAPI.Entities
 {
 
     /*in the database "User" is "Users" because sql server already has a table called User for SQL developers*/
     public class User
     {
         public int id { get; set; }
+        [Key]
         public string email { get; set; }
         public byte[] password_hash { get; set; }
         public byte[] password_salt { get; set; }

@@ -36,8 +36,9 @@ namespace BuildTheLanesAPI.Services
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
                 return null;
 
-
+            Console.WriteLine(email + "   " + password);
             var user = _context.Users.SingleOrDefault(x => x.email == email);
+            Console.WriteLine("Getting here tho?");
 
             // return null if user not found
             if (user == null)
