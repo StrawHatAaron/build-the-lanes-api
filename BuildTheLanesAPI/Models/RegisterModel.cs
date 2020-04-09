@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BuildTheLanesAPI.Models.Users
+namespace BuildTheLanesAPI.Models
 {
     public class RegisterModel
     {

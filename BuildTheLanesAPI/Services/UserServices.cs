@@ -8,73 +8,77 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using BuildTheLanesAPI.Entities;
 using BuildTheLanesAPI.Helpers;
+using BuildTheLanesAPI.Models;
 
 
 namespace BuildTheLanesAPI.Services
 {
     public interface IUserService
     {
-        User Authenticate(string email, string password);
-        IEnumerable<User> GetAll();
-        User GetById(int id);
-        User Create(User user, string password);
-        void Update(User user, string password = null);
+        Users Authenticate(string email, string password);
+        IEnumerable<Users> GetAll();
+        Users GetById(int id);
+        Users Create(Users user, string password);
+        void Update(Users user, string password = null);
         void Delete(int id);
     }
 
     public class UserService : IUserService
     {
-        private DataContext _context;
+        private webappContext _context;
 
-        public UserService(DataContext context)
+        public UserService(webappContext context)
         {
             _context = context;
         }
 
-        public User Authenticate(string email, string password)
+        public Users Authenticate(string email, string password)
         {
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
                 return null;
 
             Console.WriteLine(email + "   " + password);
-            var user = _context.Users.SingleOrDefault(x => x.email == email);
+            var user = _context.Users.SingleOrDefault(x => x.Email == email);
             Console.WriteLine("Getting here tho?");
 
             // return null if user not found
             if (user == null)
                 return null;
 
-            if (!VerifyPasswordHash(password, user.password_hash, user.password_salt))
+            var password_hash = System.Text.Encoding.UTF8.GetBytes(user.PasswordHash);
+            var password_salt = System.Text.Encoding.UTF8.GetBytes(user.PasswordSalt);
+
+            if (!VerifyPasswordHash(password, password_hash, password_salt))
                 return null;
 
             // authentication successful
             return user;
         }
 
-        public IEnumerable<User> GetAll()
+        public IEnumerable<Users> GetAll()
         {
             return _context.Users;
         }
 
-        public User GetById(int id)
+        public Users GetById(int id)
         {
             return _context.Users.Find(id);
         }
 
-        public User Create(User user, string password)
+        public Users Create(Users user, string password)
         {
             // validation
             if (string.IsNullOrWhiteSpace(password))
                 throw new AppException("Password is required");
 
-            if (_context.Users.Any(x => x.email == user.email))
-                throw new AppException("email \"" + user.email + "\" is already taken");
+            if (_context.Users.Any(x => x.Email == user.Email))
+                throw new AppException("email \"" + user.Email + "\" is already taken");
 
             byte[] passwordHash, passwordSalt;
             CreatePasswordHash(password, out passwordHash, out passwordSalt);
 
-            user.password_hash = passwordHash;
-            user.password_salt = passwordSalt;
+            user.PasswordHash = System.Text.Encoding.UTF8.GetString(passwordHash);
+            user.PasswordSalt = System.Text.Encoding.UTF8.GetString(passwordSalt);
 
             _context.Users.Add(user);
             _context.SaveChanges();
@@ -82,29 +86,29 @@ namespace BuildTheLanesAPI.Services
             return user;
         }
 
-        public void Update(User userParam, string password = null)
+        public void Update(Users userParam, string password = null)
         {
-            var user = _context.Users.Find(userParam.id);
+            var user = _context.Users.Find(userParam.Id);
 
             if (user == null)
                 throw new AppException("User not found");
 
             // update email if it has changed
-            if (!string.IsNullOrWhiteSpace(userParam.email) && userParam.email != user.email)
+            if (!string.IsNullOrWhiteSpace(userParam.Email) && userParam.Email != user.Email)
             {
                 // throw error if the new email is already taken
-                if (_context.Users.Any(x => x.email == userParam.email))
-                    throw new AppException("email " + userParam.email + " is already taken");
+                if (_context.Users.Any(x => x.Email == userParam.Email))
+                    throw new AppException("email " + userParam.Email + " is already taken");
 
-                user.email = userParam.email;
+                user.Email = userParam.Email;
             }
 
             // update user properties if provided
-            if (!string.IsNullOrWhiteSpace(userParam.f_name))
-                user.f_name = userParam.f_name;
+            if (!string.IsNullOrWhiteSpace(userParam.FName))
+                user.FName = userParam.FName;
 
-            if (!string.IsNullOrWhiteSpace(userParam.l_name))
-                user.l_name = userParam.l_name;
+            if (!string.IsNullOrWhiteSpace(userParam.LName))
+                user.LName = userParam.LName;
 
             // update password if provided
             if (!string.IsNullOrWhiteSpace(password))
@@ -112,8 +116,8 @@ namespace BuildTheLanesAPI.Services
                 byte[] passwordHash, passwordSalt;
                 CreatePasswordHash(password, out passwordHash, out passwordSalt);
 
-                user.password_hash = passwordHash;
-                user.password_salt = passwordSalt;
+                user.PasswordHash = System.Text.Encoding.UTF8.GetString(passwordHash);
+                user.PasswordSalt = System.Text.Encoding.UTF8.GetString(passwordSalt);
             }
 
             _context.Users.Update(user);

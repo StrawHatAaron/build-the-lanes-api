@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using BuildTheLanesAPI.Entities;
-using BuildTheLanesAPI.Models.Users;
+using BuildTheLanesAPI.Models;
 
 namespace BuildTheLanesAPI.Helpers
 {

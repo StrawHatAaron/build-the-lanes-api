@@ -13,7 +13,6 @@ using BuildTheLanesAPI.Helpers;
 using BuildTheLanesAPI.Services;
 using BuildTheLanesAPI.Entities;
 using BuildTheLanesAPI.Models;
-using BuildTheLanesAPI.Models.Users;
 
 namespace BuildTheLanesAPI.Controllers
 {
@@ -49,8 +48,8 @@ namespace BuildTheLanesAPI.Controllers
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, user.id.ToString()),
-                    new Claim(ClaimTypes.Role, user.roles)
+                    new Claim(ClaimTypes.Name, user.Id.ToString()),
+                    new Claim(ClaimTypes.Role, user.Roles)
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -61,10 +60,10 @@ namespace BuildTheLanesAPI.Controllers
             // return basic user info and authentication token
             return Ok(new
             {
-                Id = user.id,
-                Email = user.email,
-                F_name = user.f_name,
-                L_name = user.l_name,
+                Id = user.Id,
+                Email = user.Email,
+                F_name = user.FName,
+                L_name = user.LName,
                 token = tokenString
             });
         }
@@ -74,7 +73,7 @@ namespace BuildTheLanesAPI.Controllers
         public IActionResult Register([FromBody]RegisterModel model)
         {
             // map model to entity
-            var user = _mapper.Map<User>(model);
+            var user = _mapper.Map<Users>(model);
 
             try
             {
@@ -115,8 +114,8 @@ namespace BuildTheLanesAPI.Controllers
         public IActionResult Update(int id, [FromBody]UpdateModel model)
         {
             // map model to entity and set id
-            var user = _mapper.Map<User>(model);
-            user.id = id;
+            var user = _mapper.Map<Users>(model);
+            user.Id = id;
 
             try
             {
