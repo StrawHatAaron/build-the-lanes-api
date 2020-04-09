@@ -8,9 +8,9 @@ namespace BuildTheLanesAPI.Helpers
     {
         public AutoMapperProfile()
         {
-            CreateMap<User, UserModel>();
-            CreateMap<RegisterModel, User>();
-            CreateMap<UpdateModel, User>();
+            // CreateMap<User, UserModel>();
+            // CreateMap<RegisterModel, User>();
+            // CreateMap<UpdateModel, User>();
 
             CreateMap<Users, UserModel>();
             CreateMap<RegisterModel, Users>();

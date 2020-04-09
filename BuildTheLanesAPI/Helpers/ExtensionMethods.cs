@@ -18,7 +18,7 @@ namespace BuildTheLanesAPI.Helpers
         {
             if (user == null) return null;
 
-            user.password = null;
+            user.Password = null;
             return user;
         }
     }

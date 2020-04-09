@@ -70,15 +70,14 @@ namespace BuildTheLanesAPI.Controllers
 
         [AllowAnonymous]
         [HttpPost("register")]
-        public IActionResult Register([FromBody]RegisterModel model)
+        public IActionResult Register([FromBody]RegisterModel userToRegister)
         {
             // map model to entity
-            var user = _mapper.Map<Users>(model);
-
+            var user = _mapper.Map<Users>(userToRegister);
             try
             {
                 // create user
-                _userService.Create(user, model.password);
+                _userService.Create(user, userToRegister.Password);
                 return Ok();
             }
             catch (AppException ex)

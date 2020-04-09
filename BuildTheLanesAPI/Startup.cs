@@ -31,9 +31,9 @@ namespace BuildTheLanesAPI
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddDbContext<webappContext>();
-            // services.AddDbContext<webappContext>(o => o.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")));
-            // services.AddScoped<IUserService, UserService>();
+            // services.AddDbContext<webappContext>();
+            services.AddDbContext<webappContext>(o => o.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")));
+            services.AddScoped<IUserService, UserService>();
 
 
             services.AddCors();

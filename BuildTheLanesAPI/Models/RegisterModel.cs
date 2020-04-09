@@ -1,30 +1,23 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System;
+using System.Collections.Generic;
 
 namespace BuildTheLanesAPI.Models
 {
-    public class RegisterModel
+    public partial class RegisterModel
     {
-        [Required]
-        public int id { get; set; }
-        [Required]
-        public string email { get; set; }
-        [Required]
-        public string password { get; set; }
-        [Required]
-        public string f_name { get; set; }
-        [Required]
-        public string l_name { get; set; }
-        [Required]
+        public int Id { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
+        public string Token { get; set; }
+        public string FName { get; set; }
+        public string LName { get; set; }
         public string Roles { get; set; }
+        public decimal? AmountDonated { get; set; }
+        public string Title { get; set; }
+        public string Type { get; set; }
+        public DateTime? Created { get; set; }
 
-
-        /*For: Donator */
-        public string amount_donated { get; set; }
-        /*For: Staff */
-        public string title { get; set; }
-        /*For: Engineer */
-        public string type { get; set; }
-        /*For: Admin */
-        public string created { get; set; }
+        public virtual Donators Donators { get; set; }
+        public virtual Staffs Staffs { get; set; }
     }
 }
