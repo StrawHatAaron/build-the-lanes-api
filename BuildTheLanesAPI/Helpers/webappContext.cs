@@ -2,26 +2,27 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using BuildTheLanesAPI.Models;
+using BuildTheLanesAPI.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BuildTheLanesAPI.Helpers
 {
-    public partial class webappContext : DbContext
+    public partial class WebappContext : DbContext
     {
 
         // protected readonly IConfiguration Configuration;
 
-        // public webappContext(IConfiguration configuration)
+        // public WebappContext(IConfiguration configuration)
         // {
         //     Configuration = configuration;
         // }
 
-        public webappContext(){
+        public WebappContext(){
             
         }
 
-        public webappContext(DbContextOptions<webappContext> options)
+        public WebappContext(DbContextOptions<WebappContext> options)
             : base(options)
         {
         }

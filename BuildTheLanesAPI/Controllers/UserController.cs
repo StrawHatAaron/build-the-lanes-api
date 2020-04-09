@@ -92,13 +92,11 @@ namespace BuildTheLanesAPI.Controllers
         public IActionResult GetAllUser()
         {
             var users = _userService.GetAll();
-            var model = _mapper.Map<IList<RegisterModel>>(users);
-            return Ok(model);
+            // var model = _mapper.Map<IList<RegisterModel>>(users);
+            return Ok(users);
         }
 
         [Authorize(Roles = Roles.Admin)]
-
-
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {

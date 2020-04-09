@@ -1,12 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using BuildTheLanesAPI.Entities;
 using BuildTheLanesAPI.Helpers;
 using BuildTheLanesAPI.Models;
 
@@ -25,9 +19,9 @@ namespace BuildTheLanesAPI.Services
 
     public class UserService : IUserService
     {
-        private webappContext _context;
+        private WebappContext _context;
 
-        public UserService(webappContext context)
+        public UserService(WebappContext context)
         {
             _context = context;
         }
@@ -57,7 +51,8 @@ namespace BuildTheLanesAPI.Services
 
         public IEnumerable<Users> GetAll()
         {
-            return _context.Users;
+            return _context.Users; 
+            
         }
 
         public Users GetById(int id)
