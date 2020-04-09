@@ -9,15 +9,15 @@ namespace BuildTheLanesAPI.Helpers
     public partial class webappContext : DbContext
     {
 
-        protected readonly IConfiguration Configuration;
+        // protected readonly IConfiguration Configuration;
 
-        public webappContext(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+        // public webappContext(IConfiguration configuration)
+        // {
+        //     Configuration = configuration;
+        // }
 
-        public webappContext()
-        {
+        public webappContext(){
+            
         }
 
         public webappContext(DbContextOptions<webappContext> options)
@@ -37,12 +37,12 @@ namespace BuildTheLanesAPI.Helpers
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
-//             if (!optionsBuilder.IsConfigured)
-//             {
-// #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-//                 optionsBuilder.UseSqlServer("Data Source=build-the-lanes-0.cz837oegnsiw.us-west-1.rds.amazonaws.com,1433;Initial Catalog=webapp;User id=admin;Password=test1234");
-//             }
+            // optionsBuilder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            if (!optionsBuilder.IsConfigured)
+            {
+                // #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+                optionsBuilder.UseSqlServer("Data Source=build-the-lanes-0.cz837oegnsiw.us-west-1.rds.amazonaws.com,1433;Initial Catalog=webapp;User id=admin;Password=test1234");
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
