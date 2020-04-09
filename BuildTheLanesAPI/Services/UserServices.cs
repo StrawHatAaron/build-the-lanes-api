@@ -45,8 +45,8 @@ namespace BuildTheLanesAPI.Services
             if (user == null)
                 return null;
 
-            var password_hash = System.Text.Encoding.UTF8.GetBytes(user.PasswordHash);
-            var password_salt = System.Text.Encoding.UTF8.GetBytes(user.PasswordSalt);
+            var password_hash = user.PasswordHash;
+            var password_salt = user.PasswordSalt;
 
             if (!VerifyPasswordHash(password, password_hash, password_salt))
                 return null;
@@ -77,8 +77,8 @@ namespace BuildTheLanesAPI.Services
             byte[] passwordHash, passwordSalt;
             CreatePasswordHash(password, out passwordHash, out passwordSalt);
 
-            user.PasswordHash = System.Text.Encoding.UTF8.GetString(passwordHash);
-            user.PasswordSalt = System.Text.Encoding.UTF8.GetString(passwordSalt);
+            user.PasswordHash = passwordHash;
+            user.PasswordSalt = passwordSalt;
 
             _context.Users.Add(user);
             _context.SaveChanges();
@@ -116,8 +116,8 @@ namespace BuildTheLanesAPI.Services
                 byte[] passwordHash, passwordSalt;
                 CreatePasswordHash(password, out passwordHash, out passwordSalt);
 
-                user.PasswordHash = System.Text.Encoding.UTF8.GetString(passwordHash);
-                user.PasswordSalt = System.Text.Encoding.UTF8.GetString(passwordSalt);
+                user.PasswordHash = passwordHash;
+                user.PasswordSalt = passwordSalt;
             }
 
             _context.Users.Update(user);
