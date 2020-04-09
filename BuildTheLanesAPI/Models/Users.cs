@@ -1,11 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace BuildTheLanesAPI.Models
 {
     public partial class Users
     {
         public int Id { get; set; }
+        [Key]
         public string Email { get; set; }
         public byte[] PasswordSalt { get; set; }
         public byte[] PasswordHash { get; set; }

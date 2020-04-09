@@ -48,7 +48,7 @@ namespace BuildTheLanesAPI.Controllers
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, user.Id.ToString()),
+                    new Claim(ClaimTypes.Name, user.Email),
                     new Claim(ClaimTypes.Role, user.Roles)
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
@@ -87,13 +87,13 @@ namespace BuildTheLanesAPI.Controllers
             }
         }
 
-        [Authorize(Roles = Roles.AllStaff)]
+        [Authorize(Roles = Roles.Admin)]
         [HttpGet]
         public IActionResult GetAllUser()
         {
-            var users = _userService.GetAll();
+            //var users = _userService.GetAll();
             // var model = _mapper.Map<IList<RegisterModel>>(users);
-            return Ok(users);
+            return Ok();
         }
 
         [Authorize(Roles = Roles.Admin)]

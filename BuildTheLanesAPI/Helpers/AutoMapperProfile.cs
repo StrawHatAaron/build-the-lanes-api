@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using BuildTheLanesAPI.Entities;
 using BuildTheLanesAPI.Models;
 
 namespace BuildTheLanesAPI.Helpers
@@ -8,10 +7,6 @@ namespace BuildTheLanesAPI.Helpers
     {
         public AutoMapperProfile()
         {
-            // CreateMap<User, UserModel>();
-            // CreateMap<RegisterModel, User>();
-            // CreateMap<UpdateModel, User>();
-
             CreateMap<Users, UserModel>();
             CreateMap<RegisterModel, Users>();
             CreateMap<UpdateModel, Users>();

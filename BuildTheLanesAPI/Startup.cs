@@ -30,12 +30,8 @@ namespace BuildTheLanesAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
-            // services.AddDbContext<WebappContext>();
             services.AddDbContext<WebappContext>(o => o.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")));
             services.AddScoped<IUserService, UserService>();
-            
-
 
             services.AddCors();
             services.AddControllers();
@@ -86,11 +82,10 @@ namespace BuildTheLanesAPI
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, WebappContext dataContext)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, WebappContext webappContext)
         {
             // migrate any database changes on startup (includes initial db creation)
-            // dataContext.Database.Migrate();
-
+            // webappContext.Database.Migrate();
 
             app.UseRouting();
 
