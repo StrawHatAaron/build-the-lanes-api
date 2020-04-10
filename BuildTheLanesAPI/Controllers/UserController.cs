@@ -55,7 +55,8 @@ namespace BuildTheLanesAPI.Controllers
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
-            var tokenString = tokenHandler.WriteToken(token);
+            user.Token = tokenHandler.WriteToken(token);
+            Console.WriteLine("User's Token: " + user.Token);
 
             // return basic user info and authentication token
             return Ok(new
@@ -64,7 +65,7 @@ namespace BuildTheLanesAPI.Controllers
                 Email = user.Email,
                 F_name = user.FName,
                 L_name = user.LName,
-                token = tokenString
+                token = user.Token
             });
         }
 
@@ -91,8 +92,8 @@ namespace BuildTheLanesAPI.Controllers
         [HttpGet]
         public IActionResult GetAllUser()
         {
-            //var users = _userService.GetAll();
-            // var model = _mapper.Map<IList<RegisterModel>>(users);
+            var users = _userService.GetAll();
+            var model = _mapper.Map<IList<RegisterModel>>(users);
             return Ok();
         }
 
@@ -131,7 +132,7 @@ namespace BuildTheLanesAPI.Controllers
         public IActionResult Delete(int id)
         {
             _userService.Delete(id);
-            return Ok();
+            return Ok("hello world!");
         }
     }
 }

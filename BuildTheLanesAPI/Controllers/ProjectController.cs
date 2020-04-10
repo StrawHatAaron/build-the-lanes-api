@@ -10,7 +10,7 @@ using BuildTheLanesAPI.Models;
 
 namespace BuildTheLanesAPI.Controllers
 {
-    [Authorize]
+    
     [ApiController]
     [Route(Constants.api + "/[controller]")]    
     public class ProjectController : Controller
@@ -27,7 +27,7 @@ namespace BuildTheLanesAPI.Controllers
         }
 
 
-        [Authorize(Roles = Roles.AllStaff)]
+        // [Authorize(Roles = Roles.AllStaff)]
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -66,7 +66,7 @@ namespace BuildTheLanesAPI.Controllers
         }
 
 
-        [Authorize(Roles = Roles.User)]
+        // [Authorize(Roles = Roles.User)]
         [HttpGet("{ProjectNumber}")]
         public IActionResult GetProject(int ProjectNumber)
         {
@@ -93,7 +93,8 @@ namespace BuildTheLanesAPI.Controllers
         }
 
 
-        [Authorize(Roles = Roles.AllAdmin)]
+        // [Authorize(Roles = Roles.AllAdmin)]
+        // [AllowAnonymous]
         [HttpPost]
         public IActionResult PostProject([FromBody] Project project)
         {

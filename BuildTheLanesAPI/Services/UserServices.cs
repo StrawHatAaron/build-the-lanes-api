@@ -30,19 +30,14 @@ namespace BuildTheLanesAPI.Services
         {
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
                 return null;
-
-            Console.WriteLine(email + "   " + password);
+                
             var user = _context.Users.SingleOrDefault(x => x.Email == email);
-            Console.WriteLine("Getting here tho?");
 
             // return null if user not found
             if (user == null)
                 return null;
 
-            var password_hash = user.PasswordHash;
-            var password_salt = user.PasswordSalt;
-
-            if (!VerifyPasswordHash(password, password_hash, password_salt))
+            if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
                 return null;
 
             // authentication successful

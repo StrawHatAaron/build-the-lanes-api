@@ -54,6 +54,9 @@ namespace BuildTheLanesAPI.Helpers
                 entity.HasKey(e => e.Email)
                     .HasName("PK__Admins__AB6E6165782F5F4B");
 
+                entity.HasKey(e => e.Id)
+                    .HasName("PK_Id_A1");
+
                 entity.Property(e => e.Email)
                     .HasColumnName("email")
                     .HasMaxLength(320)
