@@ -198,6 +198,11 @@ namespace BuildTheLanesAPI.Helpers
                 entity.HasKey(e => new { e.Email, e.Degree })
                     .HasName("PK__Engineer__99C92093C995D0C9");
 
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasMaxLength(12)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Email)
                     .HasColumnName("email")
                     .HasMaxLength(320)
@@ -243,12 +248,12 @@ namespace BuildTheLanesAPI.Helpers
                 entity.Property(e => e.PasswordHash)
                     .IsRequired()
                     .HasColumnName("password_hash")
-                    .IsUnicode(false);
+                    .IsUnicode(true);
 
                 entity.Property(e => e.PasswordSalt)
                     .IsRequired()
                     .HasColumnName("password_salt")
-                    .IsUnicode(false);
+                    .IsUnicode(true);
 
                 entity.Property(e => e.Roles)
                     .IsRequired()

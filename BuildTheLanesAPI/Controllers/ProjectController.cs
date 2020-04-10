@@ -111,7 +111,7 @@ namespace BuildTheLanesAPI.Controllers
         }
 
 
-        [HttpDelete]
+        [HttpDelete("{project_num}")]
         public IActionResult DeleteProject(int project_num)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))

@@ -16,7 +16,7 @@ using BuildTheLanesAPI.Models;
 
 namespace BuildTheLanesAPI.Controllers
 {
-    [Authorize]
+    // [Authorize]
     [ApiController]
     [Route(Constants.api + "/[controller]")]
     public class UsersController : ControllerBase
@@ -33,7 +33,7 @@ namespace BuildTheLanesAPI.Controllers
             _appSettings = appSettings.Value;
         }
 
-        [AllowAnonymous]
+        // [AllowAnonymous]
         [HttpPost("authenticate")]
         public IActionResult Authenticate([FromBody]AuthenticateModel model)
         {
@@ -69,7 +69,7 @@ namespace BuildTheLanesAPI.Controllers
             });
         }
 
-        [AllowAnonymous]
+        // [AllowAnonymous]
         [HttpPost("register")]
         public IActionResult Register([FromBody]RegisterModel userToRegister)
         {
@@ -88,16 +88,17 @@ namespace BuildTheLanesAPI.Controllers
             }
         }
 
-        [Authorize(Roles = Roles.Admin)]
+        // [Authorize(Roles = Roles.Admin)]
         [HttpGet]
         public IActionResult GetAllUser()
         {
             var users = _userService.GetAll();
-            var model = _mapper.Map<IList<RegisterModel>>(users);
-            return Ok();
+            // var model = _mapper.Map<IList<RegisterModel>>(users);
+            return Ok(users);
         }
 
-        [Authorize(Roles = Roles.Admin)]
+
+        // [Authorize(Roles = Roles.Admin)]
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {

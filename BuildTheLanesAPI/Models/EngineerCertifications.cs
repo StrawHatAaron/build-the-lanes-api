@@ -7,7 +7,7 @@ namespace BuildTheLanesAPI.Models
     {
         public string Email { get; set; }
         public string Certification { get; set; }
-
+        public string Id { get; set; } 
         public virtual Engineers EmailNavigation { get; set; }
     }
 }
