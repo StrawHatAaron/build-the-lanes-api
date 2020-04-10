@@ -14,14 +14,14 @@ Password: [Ask an Author]
 
 /**********TABLE CREATION STARTS HERE**********/
 /*****ROLE BASED AUTH PROFILES SECTION STARTS HERE*****/
-IF OBJECT_ID(N'[__EFMigrationsHistory]') IS NULL
-BEGIN
-    CREATE TABLE [__EFMigrationsHistory] (
-        [MigrationId] nvarchar(150) NOT NULL,
-        [ProductVersion] nvarchar(32) NOT NULL,
-        CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
-    );
-END;
+-- IF OBJECT_ID(N'[__EFMigrationsHistory]') IS NULL
+-- BEGIN
+--     CREATE TABLE [__EFMigrationsHistory] (
+--         [MigrationId] nvarchar(150) NOT NULL,
+--         [ProductVersion] nvarchar(32) NOT NULL,
+--         CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+--     );
+-- END;
 
 CREATE TABLE [Users](
     id INT NOT NULL IDENTITY,
@@ -116,6 +116,7 @@ CREATE TABLE Engineers(
 /***Note: these aren't profiles. Just a tables for Engineer(s) with
           Multiple degrees/certifications. ***/
 CREATE TABLE EngineerCertifications(
+    id INT NOT NULL IDENTITY,
     email VARCHAR(320) NOT NULL,
     certification VARCHAR(256),
     PRIMARY KEY (email, certification),
@@ -125,6 +126,7 @@ CREATE TABLE EngineerCertifications(
 );
 
 CREATE TABLE EngineerDegrees(
+    id INT NOT NULL IDENTITY,
     email VARCHAR(320) NOT NULL,
     degree VARCHAR(256),
     PRIMARY KEY (email, degree),
@@ -261,8 +263,8 @@ SET @staff_donator_role = 'sd'
 SET @engineer_donator_role = 'ed'
 SET @admin_donator_role = 'ad'
 
-INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-VALUES (N'20200408192316_Initial', N'3.1.2');
+-- INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+-- VALUES (N'20200408192316_Initial', N'3.1.2');
 
 INSERT INTO Projects (start_date, status, city, zip_code)
 VALUES  ('04-09-2001',  'NEW',          'Vacaville',    '95688'),
@@ -356,7 +358,7 @@ DROP TABLE Engineers;
 DROP TABLE Donators;
 DROP TABLE Staffs;
 DROP TABLE [Users];
-DROP TABLE _EFMigrationsHistory;
+-- DROP TABLE _EFMigrationsHistory;
 -- DROP TRIGGER User_Updated_Check;
 /*****DROPPING ANYTHING FROM DATABASE ENDS HERE*****/
 

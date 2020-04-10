@@ -9,7 +9,6 @@ using Microsoft.Extensions.Options;
 using BuildTheLanesAPI.Helpers;
 using BuildTheLanesAPI.Services;
 using BuildTheLanesAPI.Models;
-using Newtonsoft.Json.Linq;
 
 namespace BuildTheLanesAPI.Controllers
 {
@@ -61,16 +60,16 @@ namespace BuildTheLanesAPI.Controllers
         }
         
 
-        [HttpPut]
-        public IActionResult Update([FromBody] JObject oanVal){
-            try{
-                _engineerCertService.Update(oanVal);
-                return Ok(new { message = "Updated." });
-            }
-            catch (AppException ex) {
-                return BadRequest(new { message = ex.Message });
-            }
-        }
+        // [HttpPut("{Id}")]
+        // public IActionResult Update([FromBody] intOldAndNewEngineerCertifications oanVal){
+        //     try{
+        //         _engineerCertService.Update(oldEC);
+        //         return Ok(new { message = "Updated." });
+        //     }
+        //     catch (AppException ex) {
+        //         return BadRequest(new { message = ex.Message });
+        //     }
+        // }
 
 
         [HttpDelete]
