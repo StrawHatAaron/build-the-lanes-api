@@ -116,7 +116,7 @@ CREATE TABLE Engineers(
 /***Note: these aren't profiles. Just a tables for Engineer(s) with
           Multiple degrees/certifications. ***/
 CREATE TABLE EngineerCertifications(
-    id INT NOT NULL IDENTITY,
+--     id INT NOT NULL IDENTITY,
     email VARCHAR(320) NOT NULL,
     certification VARCHAR(256),
     PRIMARY KEY (email, certification),
@@ -126,7 +126,7 @@ CREATE TABLE EngineerCertifications(
 );
 
 CREATE TABLE EngineerDegrees(
-    id INT NOT NULL IDENTITY,
+--     id INT NOT NULL IDENTITY,
     email VARCHAR(320) NOT NULL,
     degree VARCHAR(256),
     PRIMARY KEY (email, degree),

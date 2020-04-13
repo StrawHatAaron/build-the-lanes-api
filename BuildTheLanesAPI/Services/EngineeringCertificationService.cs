@@ -14,7 +14,7 @@ namespace BuildTheLanesAPI.Services
         IEnumerable<EngineerCertifications> GetAll();
         EngineerCertifications GetByKey(EngineerCertifications ec);
         EngineerCertifications Create(EngineerCertifications ec);
-        public void Update(OldAndNewEngineerCertifications oanVal);
+        public void Update(string newCert, EngineerCertifications oldCert);
         public void Delete(EngineerCertifications ec);
     }
 
@@ -51,15 +51,13 @@ namespace BuildTheLanesAPI.Services
         }
 
 
-        public void Update(OldAndNewEngineerCertifications oanVal)
+        public void Update(string newCertVal, EngineerCertifications oldCert)
         {
-            var targetEngCert = this.GetByKey(oanVal.OldCert);
-            targetEngCert = oanVal.NewCert;
-            // var targetEngCert = _context.EngineerCertifications.Find(ec.Email, OldCert);
-            // if (targetEngCert == null)
-            //     throw new AppException("The Engineer Certification was not found.");
-            // targetEngCert.Certification = ec.Certification;
-            _context.EngineerCertifications.Update(targetEngCert);
+            EngineerCertifications newCert = new EngineerCertifications();
+            newCert.Email = oldCert.Email;
+            newCert.Certification = newCertVal;
+            Delete(oldCert);
+            Create(newCert);
             _context.SaveChanges();
         }
 

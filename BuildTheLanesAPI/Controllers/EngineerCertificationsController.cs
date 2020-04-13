@@ -60,16 +60,17 @@ namespace BuildTheLanesAPI.Controllers
         }
         
 
-        // [HttpPut("{Id}")]
-        // public IActionResult Update([FromBody] intOldAndNewEngineerCertifications oanVal){
-        //     try{
-        //         _engineerCertService.Update(oldEC);
-        //         return Ok(new { message = "Updated." });
-        //     }
-        //     catch (AppException ex) {
-        //         return BadRequest(new { message = ex.Message });
-        //     }
-        // }
+        [HttpPut("{newCertVal}")]
+        public IActionResult Update(string newCertVal, [FromBody] EngineerCertifications oldCert){
+            try{
+                Console.WriteLine($"The newCertVal:{newCertVal}");
+                _engineerCertService.Update(newCertVal, oldCert);
+                return Ok(new { message = "Updated." });
+            }
+            catch (AppException ex) {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
 
 
         [HttpDelete]
@@ -83,11 +84,6 @@ namespace BuildTheLanesAPI.Controllers
                 return BadRequest(new { message = ex.Message });
             }   
         }
-    }
-
-    public class OldAndNewEngineerCertifications{
-        public EngineerCertifications OldCert;
-        public EngineerCertifications NewCert;
     }
 
 }
