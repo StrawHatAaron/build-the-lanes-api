@@ -30,19 +30,15 @@ namespace BuildTheLanesAPI.Services
         public IEnumerable<EngineerCertifications> GetAll()
         {
             return _context.EngineerCertifications; 
-            
         }
 
         public EngineerCertifications GetByKey(EngineerCertifications ec)
         {
             CheckValues(ec);
             var targetEngCert = _context.EngineerCertifications.SingleOrDefault(x => 
-                (x.Certification == ec.Certification && x.Email == ec.Email
-            ));
-
+                (x.Certification == ec.Certification && x.Email == ec.Email));
             if (targetEngCert == null)
                 throw new AppException($"Certification with email:'{ec.Email}' and certification:'{ec.Certification}' DNE.");
-
             return targetEngCert;
         }
 
