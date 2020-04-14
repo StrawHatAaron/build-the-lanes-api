@@ -15,7 +15,6 @@ namespace BuildTheLanesAPI.Models
         public string Roles { get; set; }
         public string Title { get; set; }
         public DateTime Created { get; set; }
-
         public virtual Staffs EmailNavigation { get; set; }
     }
 }

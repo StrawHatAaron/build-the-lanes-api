@@ -32,9 +32,13 @@ namespace BuildTheLanesAPI
         {
             services.AddDbContext<WebappContext>(o => o.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")));
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IEngineeringCertificationService, EngineerCertificationsService>();
+            services.AddScoped<IEngineerCertificationsService, EngineerCertificationsService>();
             services.AddScoped<IEngineeringDegreeService, EngineerDegreesService>();
             services.AddScoped<IResponsibilitiesService, ResponsibilitiesService>();
+            services.AddScoped<IAdminsService, AdminsService>();
+            services.AddScoped<IDonatorsService, DonatorsService>();
+            services.AddScoped<IEngineersService, EngineersService>();
+            services.AddScoped<IStaffsService, StaffsService>();
 
             services.AddCors();
             services.AddControllers();

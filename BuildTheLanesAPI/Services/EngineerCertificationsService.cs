@@ -8,7 +8,7 @@ using BuildTheLanesAPI.Controllers;
 
 namespace BuildTheLanesAPI.Services
 {
-    public interface IEngineeringCertificationService
+    public interface IEngineerCertificationsService
     {
         // Users Authenticate(string email, string password);
         IEnumerable<EngineerCertifications> GetAll();
@@ -18,7 +18,7 @@ namespace BuildTheLanesAPI.Services
         public void Delete(EngineerCertifications ec);
     }
 
-    public class EngineerCertificationsService : IEngineeringCertificationService
+    public class EngineerCertificationsService : IEngineerCertificationsService
     {
         private WebappContext _context;
 

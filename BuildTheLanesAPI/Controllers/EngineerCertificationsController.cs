@@ -18,10 +18,10 @@ namespace BuildTheLanesAPI.Controllers
     public class EngineerCertificationsController : ControllerBase
     {
         
-        private IEngineeringCertificationService _engineerCertService;
+        private IEngineerCertificationsService _engineerCertService;
         private readonly AppSettings _appSettings;
 
-        public EngineerCertificationsController(IEngineeringCertificationService ecService, IMapper mapper, IOptions<AppSettings> appSettings)
+        public EngineerCertificationsController(IEngineerCertificationsService ecService, IMapper mapper, IOptions<AppSettings> appSettings)
         {
             _engineerCertService = ecService;
             _appSettings = appSettings.Value;
