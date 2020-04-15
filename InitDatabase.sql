@@ -145,12 +145,31 @@ CREATE TABLE Projects(
     PRIMARY KEY (project_num)
 );
 
+CREATE TABLE ApplicableStandards(
+    data_link VARCHAR(1024) NOT NULL,
+    project_num INTEGER NOT NULL,
+    photo_name VARCHAR(64) NOT NULL,
+    PRIMARY KEY (data_link, project_num),
+    FOREIGN KEY (project_num) REFERENCES Projects(project_num)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+-- Relationship between Projects and Staffs
 CREATE TABLE Responsibilities(
     number INTEGER NOT NULL IDENTITY,
     staff_email VARCHAR(320) FOREIGN KEY REFERENCES Staffs(email),
     project_num INT FOREIGN KEY REFERENCES Projects(project_num),
     PRIMARY KEY (staff_email, project_num)
-)
+);
+
+
+CREATE TABLE Donates(
+    link VARCHAR(360) NOT NULL,
+    project_num INTEGER FOREIGN KEY REFERENCES Projects(project_num),
+    donators_email  VARCHAR(320) FOREIGN KEY REFERENCES Donators(email),
+    PRIMARY KEY (project_num, donators_email)
+);
 /**********TABLE CREATION ENDS HERE**********/
 
 
@@ -275,6 +294,14 @@ VALUES  ('04-09-2001',  'NEW',          'Vacaville',    '95688'),
         ('2018-04-03',	'Stage 2',	    'Worthington',	'42125'),
         ('2018-04-03',	'Stage 2',	    'Worthington',	'42125');
 
+INSERT INTO ApplicableStandards(data_link, project_num, photo_name)
+VALUES ('https://avatars2.githubusercontent.com/u/25778774?s=400&u=9d632b219a820cc7c56f1345ca20cabe34788f89&v=4',
+        1, 'Photo 1'),
+       ('https://avatars2.githubusercontent.com/u/37526270?s=400&v=4',
+        2, 'Photo 2'),
+       ('https://avatars3.githubusercontent.com/u/44451183?s=400&v=4',
+        3, 'Photo 3');
+
 
 /* Needs to be seperate because of the User_Created_Check trigger*/
 /*For: Admin Donator */
@@ -324,6 +351,12 @@ VALUES ('engineer@test.com',         1),
        ('engineer_donator@test.com', 2),
        ('engineer_donator@test.com', 3);
 
+INSERT INTO Donates(link, project_num, donators_email)
+VALUES ('facebook.com', 1, 'donator@test.com'),
+       ('facebook.com', 2, 'donator@test.com'),
+       ('patreon.com',  1, 'admin_donator@test.com'),
+       ('patreon.com',  2, 'admin_donator@test.com');
+
 /*****INSERTION TEST DATA ENDS HERE*****/
 /**********DATA INSERTION ENDS HERE**********/
 
@@ -333,6 +366,8 @@ VALUES ('engineer@test.com',         1),
 /**********QUERIES STARTS HERE**********/
 /***Basic Queries*****/
 SELECT * FROM Projects;
+SELECT * FROM ApplicableStandards;
+SELECT * FROM Donates;
 SELECT * FROM [Users];
 SELECT * FROM Donators;
 SELECT * FROM Staffs;
@@ -350,6 +385,8 @@ SELECT * FROM Responsibilities;
 
 /**********DROPPING ANYTHING FROM DATABASE STARTS HERE**********/
 DROP TABLE Responsibilities;
+DROP TABLE ApplicableStandards;
+DROP TABLE Donates;
 DROP TABLE Projects;
 DROP TABLE EngineerCertifications;
 DROP TABLE EngineerDegrees;
