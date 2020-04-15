@@ -20,7 +20,7 @@ CREATE TABLE Project(
     PRIMARY KEY (project_num)
 );
 
-CREATE TABLE Project_Photos(
+CREATE TABLE Applicable_Standards(
     data_link VARCHAR(1024) NOT NULL,
     project_num INTEGER NOT NULL,
     photo_name VARCHAR(64) NOT NULL,
@@ -59,8 +59,11 @@ CREATE TABLE Donator(
 	l_name VARCHAR(64) NOT NULL,
 	roles VARCHAR (2) NOT NULL,
 	amount_donated MONEY NOT NULL,
+    donates_link VARCHAR(320),
+    project_num INTEGER,
 	PRIMARY KEY (email),
-	FOREIGN KEY (email) REFERENCES Users(email)
+	FOREIGN KEY (email) REFERENCES Users(email),
+    FOREIGN KEY (project_num) REFERENCES [Project](project_num)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
 );
@@ -257,7 +260,7 @@ VALUES  ('04-09-2001',  'NEW',          'Vacaville',    '95688'),
         ('2018-04-03',	'Stage 2',	    'Worthington',	'42125'),
         ('2018-04-03',	'Stage 2',	    'Worthington',	'42125');
 
-INSERT INTO Project_Photos(data_link, project_num, photo_name)
+INSERT INTO Applicable_Standards(data_link, project_num, photo_name)
 VALUES ('https://avatars2.githubusercontent.com/u/25778774?s=400&u=9d632b219a820cc7c56f1345ca20cabe34788f89&v=4',
         1, 'Photo 1'),
        ('https://avatars2.githubusercontent.com/u/37526270?s=400&v=4',
@@ -327,7 +330,7 @@ VALUES ('admin@test.com',           'test1@test.com', GETDATE()),
 /**********QUERIES STARTS HERE**********/
 /***Basic Queries*****/
 SELECT * FROM Project;
-SELECT * FROM Project_Photos;
+SELECT * FROM Applicable_Standards;
 SELECT * FROM Users;
 SELECT * FROM Donator;
 SELECT * FROM Staff;
@@ -345,7 +348,7 @@ SELECT * FROM Admin_Deleted_User;
 
 
 /**********DROPPING ANYTHING FROM DATABASE STARTS HERE**********/
-DROP TABLE Project_Photos;
+DROP TABLE Applicable_Standards;
 DROP TABLE Project;
 DROP TABLE Engineer_Certifications;
 DROP TABLE Engineer_Degrees;
