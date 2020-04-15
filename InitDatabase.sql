@@ -295,12 +295,9 @@ VALUES  ('04-09-2001',  'NEW',          'Vacaville',    '95688'),
         ('2018-04-03',	'Stage 2',	    'Worthington',	'42125');
 
 INSERT INTO ApplicableStandards(data_link, project_num, photo_name)
-VALUES ('https://avatars2.githubusercontent.com/u/25778774?s=400&u=9d632b219a820cc7c56f1345ca20cabe34788f89&v=4',
-        1, 'Photo 1'),
-       ('https://avatars2.githubusercontent.com/u/37526270?s=400&v=4',
-        2, 'Photo 2'),
-       ('https://avatars3.githubusercontent.com/u/44451183?s=400&v=4',
-        3, 'Photo 3');
+VALUES ('https://www.odot.org/traffic/traffic1999/trf_std_1999-502.pdf', 1, 'Photo 1'),
+       ('https://www.odot.org/traffic/traffic1999/trf_std_1999-240.pdf', 2, 'Photo 2'),
+       ('https://www.odot.org/traffic/traffic1999/trf_std_1999-445.pdf', 3, 'Photo 3');
 
 
 /* Needs to be seperate because of the User_Created_Check trigger*/

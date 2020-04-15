@@ -2,24 +2,13 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using BuildTheLanesAPI.Models;
-using BuildTheLanesAPI.Entities;
-using Microsoft.Extensions.Configuration;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BuildTheLanesAPI.Helpers
 {
     public partial class WebappContext : DbContext
     {
-
-        // protected readonly IConfiguration Configuration;
-
-        // public WebappContext(IConfiguration configuration)
-        // {
-        //     Configuration = configuration;
-        // }
-
-        public WebappContext(){
-            
+        public WebappContext()
+        {
         }
 
         public WebappContext(DbContextOptions<WebappContext> options)
@@ -36,19 +25,17 @@ namespace BuildTheLanesAPI.Helpers
         public virtual DbSet<Responsibilities> Responsibilities { get; set; }
         public virtual DbSet<Staffs> Staffs { get; set; }
         public virtual DbSet<Users> Users { get; set; }
+        public virtual DbSet<ApplicableStandards> ApplicableStandards { get; set; }
+        public virtual DbSet<Donates> Donates { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            // optionsBuilder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
-            if (!optionsBuilder.IsConfigured)
-            {
-                // #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Data Source=build-the-lanes-0.cz837oegnsiw.us-west-1.rds.amazonaws.com,1433;Initial Catalog=webapp;User id=admin;Password=test1234");
-            }
+            optionsBuilder.UseSqlServer("Data Source=build-the-lanes-0.cz837oegnsiw.us-west-1.rds.amazonaws.com,1433;Initial Catalog=webapp;User id=admin;Password=test1234");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
             modelBuilder.Entity<Admins>(entity =>
             {
                 entity.HasKey(e => e.Email)
@@ -480,6 +467,45 @@ namespace BuildTheLanesAPI.Helpers
                 .Entity<Users>()
                 .Property(e => e.PasswordHash)
                 .HasConversion<string>();
+
+
+            modelBuilder.Entity<ApplicableStandards>(entity =>
+            {
+                entity.HasKey(e => new { e.DataLink, e.ProjectNum })
+                    .HasName("PK__Applicab__EA08B5BAA785C009");
+
+                entity.Property(e => e.DataLink)
+                    .HasColumnName("data_link")
+                    .HasMaxLength(1024)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ProjectNum).HasColumnName("project_num");
+
+                entity.Property(e => e.PhotoName)
+                    .IsRequired()
+                    .HasColumnName("photo_name")
+                    .HasMaxLength(64)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<Donates>(entity =>
+            {
+                entity.HasKey(e => new { e.ProjectNum, e.DonatorsEmail })
+                    .HasName("PK__Donates__3C9D13C24B6BCCCE");
+
+                entity.Property(e => e.ProjectNum).HasColumnName("project_num");
+
+                entity.Property(e => e.DonatorsEmail)
+                    .HasColumnName("donators_email")
+                    .HasMaxLength(320)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Link)
+                    .IsRequired()
+                    .HasColumnName("link")
+                    .HasMaxLength(360)
+                    .IsUnicode(false);
+            });
 
             OnModelCreatingPartial(modelBuilder);
         }

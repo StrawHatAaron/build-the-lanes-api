@@ -39,6 +39,7 @@ namespace BuildTheLanesAPI
             services.AddScoped<IDonatorsService, DonatorsService>();
             services.AddScoped<IEngineersService, EngineersService>();
             services.AddScoped<IStaffsService, StaffsService>();
+            services.AddScoped<IApplicableStandardsService, ApplicableStandardsService>();
 
             services.AddCors();
             services.AddControllers();

@@ -50,7 +50,7 @@ Scaffold-DbContext "<ConnectionString>" Microsoft.EntityFrameworkCore.SqlServer 
 
 
 ```bash
-dotnet ef dbcontext scaffold "Data Source=build-the-lanes-0.cz837oegnsiw.us-west-1.rds.amazonaws.com,1433;Initial Catalog=webapp;User id=admin;Password=test1234" Microsoft.EntityFrameworkCore.SqlServer --context-dir Helpers --output-dir Models
+dotnet ef dbcontext scaffold "Data Source=build-the-lanes-0.cz837oegnsiw.us-west-1.rds.amazonaws.com,1433;Initial Catalog=webapp;User id=admin;Password=test1234" Microsoft.EntityFrameworkCore.SqlServer --context-dir Helpers --output-dir Models -t Donates -t ApplicableStandards -f
 ```
 
 
@@ -69,6 +69,5 @@ This could be an answer to my prayers. I could possible take the whole data mode
 
 ```ba
 dotnet ef dbcontext scaffold "Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Chinook" Microsoft.EntityFrameworkCore.SqlServer
-
 ```
 
