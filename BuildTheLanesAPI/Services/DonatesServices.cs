@@ -15,7 +15,7 @@ namespace BuildTheLanesAPI.Services
         IEnumerable<Donates> GetDonatesBy(int ProjectNum);
         Donates GetByKey(Donates ec);
         Donates Create(Donates ec);
-        public void Update(string newDonates, Donates oldDonates);
+        public void Update(Donates oldDonates);
         public void Delete(Donates ec);
     }
 
@@ -50,9 +50,7 @@ namespace BuildTheLanesAPI.Services
 
         public Donates Create(Donates ec)
         {
-            //should check for duplicates on all them tho!
-            var checkObj = _context.Donates.SingleOrDefault(x => 
-                x.ProjectNum==ec.ProjectNum && x.DonatorsEmail==ec.DonatorsEmail);
+            var checkObj = _context.Donates.SingleOrDefault(x => x.ProjectNum==ec.ProjectNum && x.DonatorsEmail==ec.DonatorsEmail);
             if(checkObj != null)
                 throw new AppException($"Donates already exists for Email:{ec.DonatorsEmail} and Project Nubmer:{ec.ProjectNum}");
 
@@ -63,10 +61,10 @@ namespace BuildTheLanesAPI.Services
         }
 
 
-        public void Update(string newLink, Donates oldDonates)
+        public void Update(Donates newDonates)
         {
-            var targetDonates = this.GetByKey(oldDonates);
-            targetDonates.Link = newLink;
+            var targetDonates = this.GetByKey(newDonates);
+            targetDonates.Link = newDonates.Link;
             _context.SaveChanges();
         }
 
@@ -80,11 +78,11 @@ namespace BuildTheLanesAPI.Services
 
         public void CheckValues(Donates ec)
         {
-            if (string.IsNullOrWhiteSpace(ec.Link))
-                throw new AppException("Link is required to finish inserting this record");
+            if (string.IsNullOrEmpty(ec.ProjectNum.ToString()))
+                throw new AppException("Project Number is required to finish inserting this record");
 
-            if (string.IsNullOrWhiteSpace(ec.Link))
-                throw new AppException("Please enter a value to insert " + ec.Link + "'s  Donates in the record");
+            if (string.IsNullOrWhiteSpace(ec.DonatorsEmail))
+                throw new AppException("Email is required to finish inserting this record");
         }
     }
 }

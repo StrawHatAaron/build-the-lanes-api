@@ -46,8 +46,10 @@ namespace BuildTheLanesAPI.Services
 
         public IEnumerable<Users> GetAll()
         {
-            return _context.Users; 
-            
+            Console.WriteLine("getting here 1?");
+            var users = _context.Users; 
+            Console.WriteLine("getting here 2?");
+            return users;
         }
 
         public Users GetById(int id)

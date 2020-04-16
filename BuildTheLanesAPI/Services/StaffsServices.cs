@@ -50,9 +50,6 @@ namespace BuildTheLanesAPI.Services
         {
             if (string.IsNullOrWhiteSpace(a.Email))
                 throw new AppException("Email is required to finish inserting this record");
-
-            if (string.IsNullOrWhiteSpace(a.Email))
-                throw new AppException("Please enter a value to insert " + a.Email + "'s  certification in the record");
         }
     }
 }

@@ -44,6 +44,10 @@ namespace BuildTheLanesAPI.Services
 
         public EngineerDegrees Create(EngineerDegrees ec)
         {
+            var checkObj = _context.EngineerDegrees.SingleOrDefault(x => x.Email==ec.Email && x.Degree==ec.Degree);
+            if(checkObj != null)
+                throw new AppException($"Engineer Degree already exists for Email:{ec.Email} and Degree:{ec.Degree}");
+            
              this.CheckValues(ec);
             _context.EngineerDegrees.Add(ec);
             _context.SaveChanges();
@@ -72,10 +76,10 @@ namespace BuildTheLanesAPI.Services
         public void CheckValues(EngineerDegrees ec)
         {
             if (string.IsNullOrWhiteSpace(ec.Email))
-                throw new AppException("Email is required to finish inserting this record");
+                throw new AppException("Email is required to finish inserting this record.");
 
-            if (string.IsNullOrWhiteSpace(ec.Email))
-                throw new AppException("Please enter a value to insert " + ec.Email + "'s  Degree in the record");
+            if (string.IsNullOrWhiteSpace(ec.Degree))
+                throw new AppException("Degree is required to be entered into this field.");
         }
     }
 }

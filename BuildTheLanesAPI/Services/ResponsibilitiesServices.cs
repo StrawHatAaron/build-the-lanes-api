@@ -52,6 +52,10 @@ namespace BuildTheLanesAPI.Services
 
         public Responsibilities Create(Responsibilities ec)
         {
+            var checkObj = _context.Responsibilities.SingleOrDefault(x => x.StaffEmail==ec.StaffEmail && x.ProjectNum==ec.ProjectNum);
+            if(checkObj != null)
+                throw new AppException($"Responsibility already exists for Staff's Email:{ec.StaffEmail} and Certification:{ec.ProjectNum}");
+
              this.CheckValues(ec);
             _context.Responsibilities.Add(ec);
             _context.SaveChanges();
@@ -82,8 +86,8 @@ namespace BuildTheLanesAPI.Services
             if (string.IsNullOrWhiteSpace(ec.StaffEmail))
                 throw new AppException("StaffEmail is required to finish inserting this record");
 
-            if (string.IsNullOrWhiteSpace(ec.StaffEmail))
-                throw new AppException("Please enter a value to insert " + ec.StaffEmail + "'s  ProjectNum in the record");
+            if (string.IsNullOrEmpty(ec.ProjectNum.ToString()))
+                throw new AppException("Project Number is required to finish inserting this record");
         }
     }
 }

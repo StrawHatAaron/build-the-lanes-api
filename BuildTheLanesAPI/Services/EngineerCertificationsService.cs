@@ -5,6 +5,7 @@ using BuildTheLanesAPI.Helpers;
 using BuildTheLanesAPI.Models;
 using BuildTheLanesAPI.Controllers;
 
+//Aaron Miller wrote this entire project
 
 namespace BuildTheLanesAPI.Services
 {
@@ -44,6 +45,10 @@ namespace BuildTheLanesAPI.Services
 
         public EngineerCertifications Create(EngineerCertifications ec)
         {
+            var checkObj = _context.EngineerCertifications.SingleOrDefault(x => x.Email==ec.Email && x.Certification==ec.Certification);
+            if(checkObj != null)
+                throw new AppException($"Engineer Certification already exists for Email:{ec.Email} and Certification:{ec.Certification}");
+
              this.CheckValues(ec);
             _context.EngineerCertifications.Add(ec);
             _context.SaveChanges();
@@ -74,8 +79,8 @@ namespace BuildTheLanesAPI.Services
             if (string.IsNullOrWhiteSpace(ec.Email))
                 throw new AppException("Email is required to finish inserting this record");
 
-            if (string.IsNullOrWhiteSpace(ec.Email))
-                throw new AppException("Please enter a value to insert " + ec.Email + "'s  certification in the record");
+            if (string.IsNullOrWhiteSpace(ec.Certification))
+                throw new AppException("Certification is requried to finish inserting this record");
         }
     }
 }

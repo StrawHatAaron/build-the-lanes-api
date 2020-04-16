@@ -60,10 +60,10 @@ namespace BuildTheLanesAPI.Controllers
         }
         
 
-        [HttpPut("{newDataLink}")]
-        public IActionResult Update(string newDataLink, [FromBody] Donates oldDonates){
+        [HttpPut]
+        public IActionResult Update([FromBody] Donates newDonates){
             try{
-                _aDonateService.Update(newDataLink, oldDonates);
+                _aDonateService.Update(newDonates);
                 return Ok(new { message = "Updated." });
             }
             catch (AppException ex) {

@@ -50,6 +50,10 @@ namespace BuildTheLanesAPI.Services
 
         public ApplicableStandards Create(ApplicableStandards ec)
         {
+            var checkObj = _context.ApplicableStandards.SingleOrDefault(x => x.ProjectNum==ec.ProjectNum && x.DataLink==ec.DataLink);
+            if(checkObj != null)
+                throw new AppException($"Applicable Standard already exists for Link:{ec.DataLink} and Project Nubmer:{ec.ProjectNum}");
+
              this.CheckValues(ec);
             _context.ApplicableStandards.Add(ec);
             _context.SaveChanges();
@@ -75,10 +79,10 @@ namespace BuildTheLanesAPI.Services
         public void CheckValues(ApplicableStandards ec)
         {
             if (string.IsNullOrWhiteSpace(ec.DataLink))
-                throw new AppException("DataLink is required to finish inserting this record");
+                throw new AppException("DataLink is required to finish inserting this record.");
 
-            if (string.IsNullOrWhiteSpace(ec.DataLink))
-                throw new AppException("Please enter a value to insert " + ec.DataLink + "'s  Applicable Standard in the record");
+            if (string.IsNullOrEmpty(ec.ProjectNum.ToString()))
+                throw new AppException("Project Number is required to finish inserting this record.");
         }
     }
 }
