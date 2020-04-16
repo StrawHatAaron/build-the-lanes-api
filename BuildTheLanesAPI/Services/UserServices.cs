@@ -37,7 +37,11 @@ namespace BuildTheLanesAPI.Services
             if (user == null)
                 return null;
 
-            if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
+
+            byte[] passwordHash = System.Text.Encoding.UTF8.GetBytes(user.PasswordHash);
+            byte[] passwordSalt = System.Text.Encoding.UTF8.GetBytes(user.PasswordSalt);
+
+            if (!VerifyPasswordHash(password, passwordHash, passwordSalt))
                 return null;
 
             // authentication successful
@@ -48,6 +52,7 @@ namespace BuildTheLanesAPI.Services
         {
             Console.WriteLine("getting here 1?");
             var users = _context.Users; 
+            Console.WriteLine(users);
             Console.WriteLine("getting here 2?");
             return users;
         }
@@ -69,8 +74,8 @@ namespace BuildTheLanesAPI.Services
             byte[] passwordHash, passwordSalt;
             CreatePasswordHash(password, out passwordHash, out passwordSalt);
 
-            user.PasswordHash = passwordHash;
-            user.PasswordSalt = passwordSalt;
+            user.PasswordHash = System.Text.Encoding.UTF8.GetString(passwordHash);
+            user.PasswordSalt = System.Text.Encoding.UTF8.GetString(passwordSalt);
 
             _context.Users.Add(user);
             _context.SaveChanges();
@@ -108,8 +113,8 @@ namespace BuildTheLanesAPI.Services
                 byte[] passwordHash, passwordSalt;
                 CreatePasswordHash(password, out passwordHash, out passwordSalt);
 
-                user.PasswordHash = passwordHash;
-                user.PasswordSalt = passwordSalt;
+                user.PasswordHash = System.Text.Encoding.UTF8.GetString(passwordHash);
+                user.PasswordSalt =  System.Text.Encoding.UTF8.GetString(passwordSalt);
             }
 
             _context.Users.Update(user);

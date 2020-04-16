@@ -427,14 +427,14 @@ namespace BuildTheLanesAPI.Helpers
                 entity.Property(e => e.PasswordHash)
                     .IsRequired()
                     .HasColumnName("password_hash")
-                    .HasMaxLength(64)
-                    .IsUnicode(false);
+                    .HasMaxLength(320)
+                    .IsUnicode(true);
 
                 entity.Property(e => e.PasswordSalt)
                     .IsRequired()
                     .HasColumnName("password_salt")
-                    .HasMaxLength(128)
-                    .IsUnicode(false);
+                    .HasMaxLength(320)
+                    .IsUnicode(true);
 
                 entity.Property(e => e.Roles)
                     .IsRequired()
