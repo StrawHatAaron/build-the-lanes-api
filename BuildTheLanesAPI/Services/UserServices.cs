@@ -38,10 +38,10 @@ namespace BuildTheLanesAPI.Services
                 return null;
 
 
-            byte[] passwordHash = System.Text.Encoding.UTF8.GetBytes(user.PasswordHash);
-            byte[] passwordSalt = System.Text.Encoding.UTF8.GetBytes(user.PasswordSalt);
+            // byte[] passwordHash = System.Text.Encoding.UTF8.GetBytes(user.PasswordHash);
+            // byte[] passwordSalt = System.Text.Encoding.UTF8.GetBytes(user.PasswordSalt);
 
-            if (!VerifyPasswordHash(password, passwordHash, passwordSalt))
+            if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
                 return null;
 
             // authentication successful
@@ -74,8 +74,10 @@ namespace BuildTheLanesAPI.Services
             byte[] passwordHash, passwordSalt;
             CreatePasswordHash(password, out passwordHash, out passwordSalt);
 
-            user.PasswordHash = System.Text.Encoding.UTF8.GetString(passwordHash);
-            user.PasswordSalt = System.Text.Encoding.UTF8.GetString(passwordSalt);
+            // user.PasswordHash = System.Text.Encoding.UTF8.GetString(passwordHash);
+            // user.PasswordSalt = System.Text.Encoding.UTF8.GetString(passwordSalt);
+            user.PasswordHash = passwordHash;
+            user.PasswordSalt = passwordSalt;
 
             _context.Users.Add(user);
             _context.SaveChanges();
@@ -113,8 +115,10 @@ namespace BuildTheLanesAPI.Services
                 byte[] passwordHash, passwordSalt;
                 CreatePasswordHash(password, out passwordHash, out passwordSalt);
 
-                user.PasswordHash = System.Text.Encoding.UTF8.GetString(passwordHash);
-                user.PasswordSalt =  System.Text.Encoding.UTF8.GetString(passwordSalt);
+                // user.PasswordHash = System.Text.Encoding.UTF8.GetString(passwordHash);
+                // user.PasswordSalt =  System.Text.Encoding.UTF8.GetString(passwordSalt);
+                user.PasswordHash = passwordHash;
+                user.PasswordSalt =  passwordSalt;
             }
 
             _context.Users.Update(user);
