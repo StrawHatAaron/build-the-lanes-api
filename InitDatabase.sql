@@ -26,8 +26,8 @@ Password: [Ask an Author]
 CREATE TABLE [Users](
     id INT NOT NULL IDENTITY,
 	email VARCHAR(320) NOT NULL,
-	password_salt VARCHAR(max) NOT NULL,
-	password_hash VARCHAR(max) NOT NULL,
+	password_salt varbinary(max) NOT NULL,
+	password_hash varbinary(max) NOT NULL,
 	token VARCHAR(320),
 	f_name VARCHAR(64) NOT NULL,
 	l_name VARCHAR(64) NOT NULL,
@@ -48,8 +48,8 @@ CREATE TABLE [Users](
 CREATE TABLE Donators(
     id INT NOT NULL IDENTITY,
 	email VARCHAR(320) NOT NULL,
-	password_salt VARCHAR(max) NOT NULL,
-	password_hash VARCHAR(max) NOT NULL,
+	password_salt varbinary(max) NOT NULL,
+	password_hash varbinary(max) NOT NULL,
 	token VARCHAR(320),
 	f_name VARCHAR(64) NOT NULL,
 	l_name VARCHAR(64) NOT NULL,
@@ -64,8 +64,8 @@ CREATE TABLE Donators(
 CREATE TABLE Staffs(
     id INT NOT NULL IDENTITY,
 	email VARCHAR(320) NOT NULL,
-	password_salt VARCHAR(max) NOT NULL,
-	password_hash VARCHAR(max) NOT NULL,
+	password_salt varbinary(max) NOT NULL,
+	password_hash varbinary(max) NOT NULL,
 	token VARCHAR(320),
 	f_name VARCHAR(64) NOT NULL,
 	l_name VARCHAR(64) NOT NULL,
@@ -82,8 +82,8 @@ CREATE TABLE Staffs(
 CREATE TABlE Admins(
     id INT NOT NULL IDENTITY,
     email VARCHAR(320) NOT NULL,
-	password_salt VARCHAR(max) NOT NULL,
-	password_hash VARCHAR(max) NOT NULL,
+	password_salt varbinary(max) NOT NULL,
+	password_hash varbinary(max) NOT NULL,
 	token VARCHAR(320),
 	f_name VARCHAR(64) NOT NULL,
 	l_name VARCHAR(64) NOT NULL,
@@ -99,8 +99,8 @@ CREATE TABlE Admins(
 CREATE TABLE Engineers(
     id INT NOT NULL IDENTITY,
     email VARCHAR(320) NOT NULL,
-	password_salt VARCHAR(max) NOT NULL,
-	password_hash VARCHAR(max) NOT NULL,
+	password_salt varbinary(max) NOT NULL,
+	password_hash varbinary(max) NOT NULL,
 	token VARCHAR(320),
 	f_name VARCHAR(64) NOT NULL,
 	l_name VARCHAR(64) NOT NULL,
@@ -188,8 +188,8 @@ AS
 BEGIN
     SET NOCOUNT ON
 	DECLARE @new_email VARCHAR(320);
-	DECLARE @new_password_salt VARCHAR(max);
-    DECLARE @new_password_hash VARCHAR(max);
+	DECLARE @new_password_salt VARBINARY(max);
+    DECLARE @new_password_hash VARBINARY(max);
 	DECLARE @new_token VARCHAR(320);
 	DECLARE @new_f_name VARCHAR(64);
 	DECLARE @new_l_name VARCHAR(64);
@@ -303,31 +303,31 @@ VALUES ('https://www.odot.org/traffic/traffic1999/trf_std_1999-502.pdf', 1, 'Pho
 /* Needs to be seperate because of the User_Created_Check trigger*/
 /*For: Admin Donator */
 INSERT INTO [Users] (email, password_salt, password_hash, token, f_name, l_name, roles, amount_donated, title,  type, created)
-VALUES ('admin@test.com',              'password_salt', 'password_hash', '', 'admin',                'test', @admin_role,
+VALUES ('admin@test.com',               0x4F,          0x4F, '', 'admin',                'test', @admin_role,
         10.00,                          'title',       'Software Developer',    GETDATE());
 /*For: Donator */
 INSERT INTO [Users] (email, password_salt, password_hash, token, f_name, l_name, roles, amount_donated, title,  type, created)
-VALUES ('donator@test.com',            'password_salt', 'password_hash', '', 'donator',              'test', @donator_role,
+VALUES ('donator@test.com',              0x4F, 0x4F, '', 'donator',              'test', @donator_role,
         10.00,                           NULL,           NULL,                   NULL);
 /*For: Staff */
 INSERT INTO [Users] (email, password_salt, password_hash, token, f_name, l_name, roles, amount_donated, title,  type, created)
-VALUES ('staff@test.com',              'password_salt', 'password_hash', '', 'staff',                'test', @staff_role,
+VALUES ('staff@test.com',              0x4F, 0x4F, '', 'staff',                'test', @staff_role,
         NULL,                          'title',          NULL,                   NULL);
 /*For: Engineer */
 INSERT INTO [Users] (email, password_salt, password_hash, token, f_name, l_name, roles, amount_donated, title,  type, created)
-VALUES ('engineer@test.com',           'password_salt', 'password_hash', '', 'engineer',             'test', @engineer_role,
+VALUES ('engineer@test.com',           0x4F, 0x4F, '', 'engineer',             'test', @engineer_role,
         NULL,                          'title',        'Water Resources',        NULL);
 /*For: Admin Donantor */
 INSERT INTO [Users] (email, password_salt, password_hash, token, f_name, l_name, roles, amount_donated, title,  type, created)
-VALUES ('admin_donator@test.com',      'password_salt', 'password_hash', '', 'admin_donator',        'test', @admin_donator_role,
+VALUES ('admin_donator@test.com',      0x4F, 0x4F, '', 'admin_donator',        'test', @admin_donator_role,
         20.00,                         'Database Admin', NULL,                   GETDATE());
 /*For: Engineer Donator */
 INSERT INTO [Users] (email, password_salt, password_hash, token, f_name, l_name, roles, amount_donated, title,  type, created)
-VALUES ('engineer_donator@test.com',   'password_salt', 'password_hash', '', 'engineer_donator',     'test', @engineer_donator_role,
+VALUES ('engineer_donator@test.com',   0x4F, 0x4F, '', 'engineer_donator',     'test', @engineer_donator_role,
         30.00,                         'title',          'Transportation',     NULL);
 /*For: Staff Donator */
 INSERT INTO [Users] (email, password_salt, password_hash, token, f_name, l_name, roles, amount_donated, title,  type, created)
-VALUES ('staff_donator@test.com',      'password_salt', 'password_hash', '', 'engineer_donator',     'test', @staff_donator_role,
+VALUES ('staff_donator@test.com',      0x4F, 0x4F, '', 'engineer_donator',     'test', @staff_donator_role,
         40.00,                         'title',          NULL,                   NULL);
 
 INSERT INTO EngineerCertifications(email, certification)
