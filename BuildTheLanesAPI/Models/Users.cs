@@ -17,7 +17,6 @@ namespace BuildTheLanesAPI.Models
         public string Title { get; set; }
         public string Type { get; set; }
         public DateTime? Created { get; set; }
-
         public virtual Donators Donators { get; set; }
         public virtual Staffs Staffs { get; set; }
     }

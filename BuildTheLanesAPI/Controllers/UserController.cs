@@ -93,7 +93,6 @@ namespace BuildTheLanesAPI.Controllers
         public IActionResult GetAllUser()
         {
             var users = _userService.GetAll();
-            // var model = _mapper.Map<IList<RegisterModel>>(users);
             return Ok(users);
         }
 
@@ -103,8 +102,7 @@ namespace BuildTheLanesAPI.Controllers
         public IActionResult GetById(int id)
         {
             var user = _userService.GetById(id);
-            var model = _mapper.Map<RegisterModel>(user);
-            return Ok(model);
+            return Ok(user);
         }
 
         

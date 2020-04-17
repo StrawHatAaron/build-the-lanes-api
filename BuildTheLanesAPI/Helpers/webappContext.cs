@@ -69,15 +69,13 @@ namespace BuildTheLanesAPI.Helpers
                     .HasMaxLength(64)
                     .IsUnicode(false);
 
-                entity.Property(e => e.PasswordHash)
-                    .IsRequired()
-                    .HasColumnName("password_hash")
-                    .IsUnicode(false);
+                entity.Property<byte[]>(e => e.PasswordHash)
+                        .HasColumnType("varbinary(max)")
+                        .HasColumnName("password_hash");
 
-                entity.Property(e => e.PasswordSalt)
-                    .IsRequired()
-                    .HasColumnName("password_salt")
-                    .IsUnicode(false);
+                entity.Property<byte[]>(e => e.PasswordSalt)
+                    .HasColumnType("varbinary(max)")
+                    .HasColumnName("password_salt");    
 
                 entity.Property(e => e.Roles)
                     .IsRequired()
@@ -132,15 +130,13 @@ namespace BuildTheLanesAPI.Helpers
                     .HasMaxLength(64)
                     .IsUnicode(false);
 
-                entity.Property(e => e.PasswordHash)
-                    .IsRequired()
-                    .HasColumnName("password_hash")
-                    .IsUnicode(false);
+                entity.Property<byte[]>(e => e.PasswordHash)
+                        .HasColumnType("varbinary(max)")
+                        .HasColumnName("password_hash");
 
-                entity.Property(e => e.PasswordSalt)
-                    .IsRequired()
-                    .HasColumnName("password_salt")
-                    .IsUnicode(false);
+                entity.Property<byte[]>(e => e.PasswordSalt)
+                    .HasColumnType("varbinary(max)")
+                    .HasColumnName("password_salt");
 
                 entity.Property(e => e.Roles)
                     .IsRequired()
@@ -223,15 +219,13 @@ namespace BuildTheLanesAPI.Helpers
                     .HasMaxLength(64)
                     .IsUnicode(false);
 
-                entity.Property(e => e.PasswordHash)
-                    .IsRequired()
-                    .HasColumnName("password_hash")
-                    .IsUnicode(true);
+                entity.Property<byte[]>(e => e.PasswordHash)
+                        .HasColumnType("varbinary(max)")
+                        .HasColumnName("password_hash");
 
-                entity.Property(e => e.PasswordSalt)
-                    .IsRequired()
-                    .HasColumnName("password_salt")
-                    .IsUnicode(true);
+                entity.Property<byte[]>(e => e.PasswordSalt)
+                    .HasColumnType("varbinary(max)")
+                    .HasColumnName("password_salt");
 
                 entity.Property(e => e.Roles)
                     .IsRequired()
@@ -352,15 +346,13 @@ namespace BuildTheLanesAPI.Helpers
                     .HasMaxLength(64)
                     .IsUnicode(false);
 
-                entity.Property(e => e.PasswordHash)
-                    .IsRequired()
-                    .HasColumnName("password_hash")
-                    .IsUnicode(false);
+                entity.Property<byte[]>(e => e.PasswordHash)
+                        .HasColumnType("varbinary(max)")
+                        .HasColumnName("password_hash");
 
-                entity.Property(e => e.PasswordSalt)
-                    .IsRequired()
-                    .HasColumnName("password_salt")
-                    .IsUnicode(false);
+                entity.Property<byte[]>(e => e.PasswordSalt)
+                    .HasColumnType("varbinary(max)")
+                    .HasColumnName("password_salt");
 
                 entity.Property(e => e.Roles)
                     .IsRequired()
@@ -432,18 +424,6 @@ namespace BuildTheLanesAPI.Helpers
                     .HasColumnType("varbinary(max)")
                     .HasColumnName("password_salt");
 
-                // entity.Property(e => e.PasswordHash)
-                //     .IsRequired()
-                //     .HasColumnName("password_hash")
-                //     .HasMaxLength(64)
-                //     .IsUnicode(false);
-
-                // entity.Property(e => e.PasswordSalt)
-                //     .IsRequired()
-                //     .HasColumnName("password_salt")
-                //     .HasMaxLength(128)
-                //     .IsUnicode(false);
-
                 entity.Property(e => e.Roles)
                     .IsRequired()
                     .HasColumnName("roles")
@@ -465,16 +445,6 @@ namespace BuildTheLanesAPI.Helpers
                     .HasMaxLength(256)
                     .IsUnicode(false);
             });
-
-            // modelBuilder
-            //     .Entity<Users>()
-            //     .Property(e => e.PasswordSalt)
-            //     .HasConversion<string>();
-
-            // modelBuilder
-            //     .Entity<Users>()
-            //     .Property(e => e.PasswordHash)
-            //     .HasConversion<string>();
 
 
             modelBuilder.Entity<ApplicableStandards>(entity =>

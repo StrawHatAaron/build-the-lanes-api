@@ -37,10 +37,6 @@ namespace BuildTheLanesAPI.Services
             if (user == null)
                 return null;
 
-
-            // byte[] passwordHash = System.Text.Encoding.UTF8.GetBytes(user.PasswordHash);
-            // byte[] passwordSalt = System.Text.Encoding.UTF8.GetBytes(user.PasswordSalt);
-
             if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
                 return null;
 
@@ -59,7 +55,7 @@ namespace BuildTheLanesAPI.Services
 
         public Users GetById(int id)
         {
-            return _context.Users.Find(id);
+            return _context.Users.SingleOrDefault(x => x.Id==id);
         }
 
         public Users Create(Users user, string password)
@@ -74,8 +70,6 @@ namespace BuildTheLanesAPI.Services
             byte[] passwordHash, passwordSalt;
             CreatePasswordHash(password, out passwordHash, out passwordSalt);
 
-            // user.PasswordHash = System.Text.Encoding.UTF8.GetString(passwordHash);
-            // user.PasswordSalt = System.Text.Encoding.UTF8.GetString(passwordSalt);
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
 
@@ -115,8 +109,6 @@ namespace BuildTheLanesAPI.Services
                 byte[] passwordHash, passwordSalt;
                 CreatePasswordHash(password, out passwordHash, out passwordSalt);
 
-                // user.PasswordHash = System.Text.Encoding.UTF8.GetString(passwordHash);
-                // user.PasswordSalt =  System.Text.Encoding.UTF8.GetString(passwordSalt);
                 user.PasswordHash = passwordHash;
                 user.PasswordSalt =  passwordSalt;
             }
