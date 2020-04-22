@@ -21,6 +21,8 @@ namespace BuildTheLanesAPI
     {
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
 
         public Startup(IWebHostEnvironment env, IConfiguration configuration)
         {
@@ -43,7 +45,21 @@ namespace BuildTheLanesAPI
             services.AddScoped<IApplicableStandardsService, ApplicableStandardsService>();
             services.AddScoped<IDonatesService, DonatesService>();
 
-            services.AddCors();
+            // services.AddCors();
+
+            services.AddCors(options =>
+            {
+            options.AddPolicy(name: MyAllowSpecificOrigins,
+                              builder =>
+                              {
+                                  builder.WithOrigins("http://localhost:3000",
+                                                      "http://localhost",
+                                                      "http://www.buildthelanes.com")
+                                                      .AllowAnyHeader()
+                                                      .AllowAnyMethod();
+                              });
+            });
+
             services.AddControllers();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -100,13 +116,14 @@ namespace BuildTheLanesAPI
             app.UseRouting();
 
             // global cors policy
-            app.UseCors(x => x
-                .AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader());
+            app.UseCors(MyAllowSpecificOrigins);
+            // app.UseCors(x => x
+            //     .AllowAnyOrigin()
+            //     .AllowAnyMethod()
+            //     .AllowAnyHeader());
 
-            app.UseAuthentication();
-            app.UseAuthorization();
+            // app.UseAuthentication();
+            // app.UseAuthorization();
 
             app.UseEndpoints(endpoints => endpoints.MapControllers());
         }
