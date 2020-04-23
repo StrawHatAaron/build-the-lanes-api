@@ -34,7 +34,10 @@
    dotnet ef database update
    ```
 
-   
+
+
+
+Donators.js EngineerCertifications.js EngineerDegrees.js Projects.js Responsibilities.js Staffs.js ApplicableStandards.js Donates
 
 
 
