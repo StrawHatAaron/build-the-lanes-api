@@ -107,17 +107,16 @@ namespace BuildTheLanesAPI.Controllers
 
         
 
-        [HttpPut("{id}")]
-        public IActionResult Update(int id, [FromBody]UpdateModel model)
+        [HttpPut]
+        public IActionResult Update([FromBody]UpdateModel model)
         {
             // map model to entity and set id
             var user = _mapper.Map<Users>(model);
-            user.Id = id;
 
             try
             {
                 // update user 
-                _userService.Update(user, model.password);
+                _userService.Update(user, model.Password);
                 return Ok();
             }
             catch (AppException ex)

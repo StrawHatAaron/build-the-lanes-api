@@ -1,10 +1,19 @@
-﻿namespace BuildTheLanesAPI.Models
+﻿using System;
+
+namespace BuildTheLanesAPI.Models
 {
     public class UpdateModel
     {
-        public string f_name { get; set; }
-        public string l_name { get; set; }
-        public string email { get; set; }
-        public string password { get; set; }
+        public int Id { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
+        public string Token { get; set; }
+        public string FName { get; set; }
+        public string LName { get; set; }
+        public string Roles { get; set; }
+        public decimal? AmountDonated { get; set; }
+        public string Title { get; set; }
+        public string Type { get; set; }
+        public DateTime? Created { get; set; }
     }
-}
+} 

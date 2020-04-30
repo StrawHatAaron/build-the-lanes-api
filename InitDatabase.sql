@@ -178,9 +178,6 @@ GO -- This GO statement is required to end the query statements and differ betwe
 
 /**********PERSISTENT STORED MODULES START HERE**********/
 /***TRIGGER CREATION STARTS HERE***/
-
-
-
 CREATE TRIGGER User_Created_Check
 ON [Users]
 AFTER INSERT
@@ -246,6 +243,135 @@ BEGIN
         INSERT INTO Admins(email, password_salt, password_hash, token, f_name, l_name, roles, title, created)
         VALUES (@new_email, @new_password_salt, @new_password_hash, @new_token, @new_f_name, @new_l_name, @new_roles, @new_title, @new_created)
 END
+
+
+CREATE TRIGGER User_Updated_Check
+ON [Users]
+AFTER UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON
+
+	DECLARE @email VARCHAR(320);
+
+    DECLARE @new_password_hash VARBINARY(max);
+    DECLARE @new_password_salt VARBINARY(max);
+	DECLARE @new_token VARCHAR(320);
+	DECLARE @new_f_name VARCHAR(64);
+	DECLARE @new_l_name VARCHAR(64);
+	DECLARE @new_roles VARCHAR (2);
+	DECLARE @new_amount_donated MONEY;
+	DECLARE @new_title VARCHAR(128);
+	DECLARE @new_type VARCHAR(256);
+	DECLARE @new_created DATETIME;
+
+	DECLARE @old_token VARCHAR(320);
+	DECLARE @old_f_name VARCHAR(64);
+	DECLARE @old_l_name VARCHAR(64);
+	DECLARE @old_roles VARCHAR (2);
+	DECLARE @old_amount_donated MONEY;
+	DECLARE @old_title VARCHAR(128);
+	DECLARE @old_type VARCHAR(256);
+	DECLARE @old_created DATETIME;
+
+    SET @email = (SELECT email FROM Inserted);
+
+    SET @new_password_hash = (SELECT  password_hash FROM Inserted);
+    SET @new_password_salt = (SELECT  password_salt FROM Inserted);
+	SET @new_token = (SELECT token FROM Inserted);
+	SET @new_f_name = (SELECT f_name FROM Inserted);
+	SET @new_l_name = (SELECT l_name FROM Inserted);
+	SET @new_roles = (SELECT roles FROM Inserted);
+	SET @new_amount_donated = (SELECT amount_donated FROM Inserted);
+	SET @new_title = (SELECT title FROM Inserted);
+	SET @new_type = (SELECT type FROM Inserted);
+	SET @new_created = (SELECT created FROM Inserted);
+
+	SET @old_token = (SELECT token FROM Deleted);
+	SET @old_f_name = (SELECT f_name FROM Deleted);
+	SET @old_l_name = (SELECT l_name FROM Deleted);
+	SET @old_roles = (SELECT roles FROM Deleted);
+	SET @old_amount_donated = (SELECT amount_donated FROM Deleted);
+	SET @old_title = (SELECT title FROM Deleted);
+	SET @old_type = (SELECT type FROM Deleted);
+	SET @old_created = (SELECT created FROM Deleted);
+
+    IF @old_roles != @new_roles
+        BEGIN
+            THROW 51000, 'The Roles need to match and cannot change', 1;
+            ROLLBACK TRANSACTION
+        END
+
+    IF @new_roles != 'd' AND
+       @new_roles != 's' AND
+       @new_roles != 'e' AND
+       @new_roles != 'a' AND
+       @new_roles != 'sd' AND
+       @new_roles != 'ed' AND
+       @new_roles != 'ad'
+        BEGIN
+            THROW 51000, 'The Role entered does not exist', 1;
+            ROLLBACK TRANSACTION
+        END
+
+    -- Donators
+    IF @new_roles = 'd'  OR
+       @new_roles = 'sd' OR
+       @new_roles = 'ed' OR
+       @new_roles = 'ad'
+            IF @new_token != '' or
+               @new_token is not null
+                UPDATE Donators
+                SET token = @new_token
+                WHERE email = @email;
+            -- IF @new_password_salt, password_hash, roles, amount_donated
+            IF @new_f_name != ''
+                UPDATE Donators
+                SET token = @new_f_name
+                WHERE email = @email;
+            IF @new_l_name != ''
+                UPDATE Donators
+                SET token = @new_l_name
+                WHERE email = @email;
+
+
+    -- Staffs
+    IF @new_roles = 's' OR
+       @new_roles = 'sd' OR
+       @new_roles = 'e' OR
+       @new_roles = 'a' OR
+       @new_roles = 'ed' OR
+       @new_roles = 'ad'
+        IF @new_token != ''
+            UPDATE Staffs
+            SET token = @new_token
+            WHERE email = @email;
+
+    -- Engineers
+    IF @new_roles = 'e' OR
+       @new_roles = 'ed'
+        IF @new_token != ''
+            UPDATE Engineers
+            SET token = @new_token
+            WHERE email = @email;
+
+    -- Admins
+    IF @new_roles = 'a' OR
+       @new_roles = 'ad'
+        IF @new_token != ''
+            UPDATE Admins
+            SET token = @new_token
+            WHERE email = @email;
+
+END
+
+
+DROP TRIGGER User_Updated_Check;
+
+
+UPDATE Users
+SET token = 'this is really confusing..', roles='d'
+WHERE email = 'donator@test.com';
 
 
 /*****TRIGGER CREATION ENDS    HERE*****/

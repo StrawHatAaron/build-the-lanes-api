@@ -81,39 +81,44 @@ namespace BuildTheLanesAPI.Services
 
         public void Update(Users userParam, string password = null)
         {
-            var user = _context.Users.Find(userParam.Id);
-
-            if (user == null)
-                throw new AppException("User not found");
-
-            // update email if it has changed
-            if (!string.IsNullOrWhiteSpace(userParam.Email) && userParam.Email != user.Email)
-            {
-                // throw error if the new email is already taken
-                if (_context.Users.Any(x => x.Email == userParam.Email))
-                    throw new AppException("email " + userParam.Email + " is already taken");
-
-                user.Email = userParam.Email;
-            }
-
+            // var user = _context.Users.Find(userParam.Email);
+            
+            _context.Users.Attach(userParam);
+            
             // update user properties if provided
+            if (!string.IsNullOrWhiteSpace(userParam.Token))
+                _context.Entry(userParam).Property(x => x.Token).IsModified = true;
+
             if (!string.IsNullOrWhiteSpace(userParam.FName))
-                user.FName = userParam.FName;
+                _context.Entry(userParam).Property(x => x.FName).IsModified = true;
 
             if (!string.IsNullOrWhiteSpace(userParam.LName))
-                user.LName = userParam.LName;
+                _context.Entry(userParam).Property(x => x.LName).IsModified = true;
 
+            if (!string.IsNullOrWhiteSpace(userParam.Roles))
+                _context.Entry(userParam).Property(x => x.Roles).IsModified = true;
+
+            if(userParam.AmountDonated.HasValue)
+                _context.Entry(userParam).Property(x => x.AmountDonated).IsModified = true;
+                        
+            if (!string.IsNullOrWhiteSpace(userParam.Title))
+                _context.Entry(userParam).Property(x => x.Title).IsModified = true;
+
+            if (!string.IsNullOrWhiteSpace(userParam.Type))
+                _context.Entry(userParam).Property(x => x.Type).IsModified = true;
+
+            if(userParam.Created.HasValue)
+                _context.Entry(userParam).Property(x => x.Created).IsModified = true;
+                
             // update password if provided
             if (!string.IsNullOrWhiteSpace(password))
             {
                 byte[] passwordHash, passwordSalt;
                 CreatePasswordHash(password, out passwordHash, out passwordSalt);
 
-                user.PasswordHash = passwordHash;
-                user.PasswordSalt =  passwordSalt;
             }
 
-            _context.Users.Update(user);
+            // _context.Users.Update(user);
             _context.SaveChanges();
         }
 
