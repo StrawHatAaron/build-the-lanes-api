@@ -244,6 +244,7 @@ BEGIN
         VALUES (@new_email, @new_password_salt, @new_password_hash, @new_token, @new_f_name, @new_l_name, @new_roles, @new_title, @new_created)
 END
 
+GO
 
 CREATE TRIGGER User_Updated_Check
 ON [Users]
@@ -253,7 +254,7 @@ BEGIN
     SET NOCOUNT ON
 
 	DECLARE @email VARCHAR(320);
-
+    DECLARE @old_roles VARCHAR (2);
     DECLARE @new_password_hash VARBINARY(max);
     DECLARE @new_password_salt VARBINARY(max);
 	DECLARE @new_token VARCHAR(320);
@@ -265,17 +266,9 @@ BEGIN
 	DECLARE @new_type VARCHAR(256);
 	DECLARE @new_created DATETIME;
 
-	DECLARE @old_token VARCHAR(320);
-	DECLARE @old_f_name VARCHAR(64);
-	DECLARE @old_l_name VARCHAR(64);
-	DECLARE @old_roles VARCHAR (2);
-	DECLARE @old_amount_donated MONEY;
-	DECLARE @old_title VARCHAR(128);
-	DECLARE @old_type VARCHAR(256);
-	DECLARE @old_created DATETIME;
 
     SET @email = (SELECT email FROM Inserted);
-
+    SET @old_roles = (SELECT roles FROM Deleted);
     SET @new_password_hash = (SELECT  password_hash FROM Inserted);
     SET @new_password_salt = (SELECT  password_salt FROM Inserted);
 	SET @new_token = (SELECT token FROM Inserted);
@@ -287,14 +280,7 @@ BEGIN
 	SET @new_type = (SELECT type FROM Inserted);
 	SET @new_created = (SELECT created FROM Inserted);
 
-	SET @old_token = (SELECT token FROM Deleted);
-	SET @old_f_name = (SELECT f_name FROM Deleted);
-	SET @old_l_name = (SELECT l_name FROM Deleted);
-	SET @old_roles = (SELECT roles FROM Deleted);
-	SET @old_amount_donated = (SELECT amount_donated FROM Deleted);
-	SET @old_title = (SELECT title FROM Deleted);
-	SET @old_type = (SELECT type FROM Deleted);
-	SET @old_created = (SELECT created FROM Deleted);
+
 
     IF @old_roles != @new_roles
         BEGIN
@@ -319,20 +305,30 @@ BEGIN
        @new_roles = 'sd' OR
        @new_roles = 'ed' OR
        @new_roles = 'ad'
-            IF @new_token != '' or
-               @new_token is not null
-                UPDATE Donators
-                SET token = @new_token
-                WHERE email = @email;
-            -- IF @new_password_salt, password_hash, roles, amount_donated
-            IF @new_f_name != ''
-                UPDATE Donators
-                SET token = @new_f_name
-                WHERE email = @email;
-            IF @new_l_name != ''
-                UPDATE Donators
-                SET token = @new_l_name
-                WHERE email = @email;
+        IF UPDATE(token)
+            UPDATE Donators
+            SET token = @new_token
+            WHERE email = @email;
+        IF Update(password_salt)
+            UPDATE Donators
+            SET password_salt = @new_password_salt
+            WHERE email = @email;
+        IF Update(password_hash)
+            UPDATE Donators
+            SET password_hash = @new_password_hash
+            WHERE email = @email;
+        IF UPDATE(f_name)
+            UPDATE Donators
+            SET f_name = @new_f_name
+            WHERE email = @email;
+        IF Update(l_name)
+            UPDATE Donators
+            SET l_name = @new_l_name
+            WHERE email = @email;
+        IF Update(amount_donated)
+            UPDATE Donators
+            SET amount_donated = @new_amount_donated
+            WHERE email = @email;
 
 
     -- Staffs
@@ -342,37 +338,107 @@ BEGIN
        @new_roles = 'a' OR
        @new_roles = 'ed' OR
        @new_roles = 'ad'
-        IF @new_token != ''
+        IF Update(token)
             UPDATE Staffs
             SET token = @new_token
+            WHERE email = @email;
+        IF Update(password_salt)
+            UPDATE Staffs
+            SET password_salt = @new_password_salt
+            WHERE email = @email;
+        IF Update(password_hash)
+            UPDATE Staffs
+            SET password_hash = @new_password_hash
+            WHERE email = @email;
+        IF Update(f_name)
+            UPDATE Staffs
+            SET f_name = @new_f_name
+            WHERE email = @email;
+        IF Update(l_name)
+            UPDATE Staffs
+            SET l_name = @new_l_name
+            WHERE email = @email;
+        IF Update(title)
+            UPDATE Staffs
+            SET title = @new_title
+            WHERE email = @email;
+        IF Update(type)
+            UPDATE Staffs
+            SET type = @new_type
+            WHERE email = @email;
+        IF Update(created)
+            UPDATE Staffs
+            SET created = @new_created
             WHERE email = @email;
 
     -- Engineers
     IF @new_roles = 'e' OR
        @new_roles = 'ed'
-        IF @new_token != ''
+        If Update(token)
             UPDATE Engineers
             SET token = @new_token
+            WHERE email = @email;
+        If Update(password_salt)
+            UPDATE Engineers
+            SET password_salt = @new_password_salt
+            WHERE email = @email;
+        If Update(password_hash)
+            UPDATE Engineers
+            SET password_hash = @new_password_hash
+            WHERE email = @email;
+        If Update(f_name)
+            UPDATE Engineers
+            SET f_name = @new_f_name
+            WHERE email = @email;
+        If Update(l_name)
+            UPDATE Engineers
+            SET l_name = @new_l_name
+            WHERE email = @email;
+        If Update(title)
+            UPDATE Engineers
+            SET title = @new_title
+            WHERE email = @email;
+        If Update(type)
+            UPDATE Engineers
+            SET type = @new_type
             WHERE email = @email;
 
     -- Admins
     IF @new_roles = 'a' OR
        @new_roles = 'ad'
-        IF @new_token != ''
+        IF Update(token)
             UPDATE Admins
             SET token = @new_token
+            WHERE email = @email;
+        IF Update(password_salt)
+            UPDATE Admins
+            SET password_salt = @new_password_salt
+            WHERE email = @email;
+        IF Update(password_hash)
+            UPDATE Admins
+            SET password_hash = @new_password_hash
+            WHERE email = @email;
+        IF Update(f_name)
+            UPDATE Admins
+            SET f_name = @new_f_name
+            WHERE email = @email;
+        IF Update(l_name)
+            UPDATE Admins
+            SET l_name = @new_l_name
+            WHERE email = @email;
+        IF Update(title)
+            UPDATE Admins
+            SET title = @new_title
+            WHERE email = @email;
+        IF Update(created)
+            UPDATE Admins
+            SET created = @new_created
             WHERE email = @email;
 
 END
 
 
-DROP TRIGGER User_Updated_Check;
-
-
-UPDATE Users
-SET token = 'this is really confusing..', roles='d'
-WHERE email = 'donator@test.com';
-
+-- DROP TRIGGER User_Updated_Check;
 
 /*****TRIGGER CREATION ENDS    HERE*****/
 
@@ -479,6 +545,23 @@ VALUES ('facebook.com', 1, 'donator@test.com'),
        ('facebook.com', 2, 'donator@test.com'),
        ('patreon.com',  1, 'admin_donator@test.com'),
        ('patreon.com',  2, 'admin_donator@test.com');
+
+
+UPDATE Users
+SET token = 'owivccmasdkf',
+    password_hash = 0xBB,
+    password_salt = 0xBB,
+    roles='d'
+WHERE email = 'donator@test.com';
+
+UPDATE Users
+SET token = 'change test on staff donator',
+    password_hash = 0xCC,
+    password_salt = 0xCC,
+    f_name = 'fn test',
+    l_name = 'ln test',
+    roles='sd'
+WHERE email = 'staff_donator@test.com';
 
 /*****INSERTION TEST DATA ENDS HERE*****/
 /**********DATA INSERTION ENDS HERE**********/

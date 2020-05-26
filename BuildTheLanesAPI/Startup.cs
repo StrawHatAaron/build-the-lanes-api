@@ -50,14 +50,13 @@ namespace BuildTheLanesAPI
             services.AddCors(options =>
             {
             options.AddPolicy(name: MyAllowSpecificOrigins,
-                              builder =>
-                              {
-                                  builder.WithOrigins("http://localhost:3000",
-                                                      "http://localhost",
-                                                      "http://www.buildthelanes.com")
-                                                      .AllowAnyHeader()
-                                                      .AllowAnyMethod();
-                              });
+                builder =>
+                {
+                    builder
+                        .WithOrigins("*")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
             });
 
             services.AddControllers();
